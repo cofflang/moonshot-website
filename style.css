@@ -100,7 +100,7 @@ h1, h2, h3 { font-weight: 400; line-height: 1.2; }
 .muted { color: var(--muted); }
 
 .mark, .rule,
-ul.entries .glyph, ul.categories .cat-icon, .ico,
+ul.categories .cat-icon, .ico,
 a.int::after, a.ext::after, a[href^="http"]::after, .wip::after {
   background-repeat: no-repeat;
   background-position: center;
@@ -114,7 +114,6 @@ a.int::after, a.ext::after, a[href^="http"]::after, .wip::after {
 }
 
 .ico-tech    { background-image: url(icons/tech.svg); }
-.ico-blog    { background-image: url(icons/blog.svg); }
 .ico-dn      { background-image: url(icons/arrow-dn.svg); }
 .ico-disc    { background-image: url(icons/disc.svg); }
 .ico-diamond { background-image: url(icons/diamond.svg); }
@@ -189,27 +188,13 @@ h2 {
   margin: 0;
 }
 
-.index {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
-  gap: 2.4rem;
-  margin-top: 3.6rem;
-}
+.index { margin-top: 3.6rem; }
 
-ul.entries,
 ul.categories { list-style: none; margin: 0; padding: 0; }
 
-ul.entries li,
 ul.categories li {
   margin: 0 0 0.5rem;
   line-height: 1.4;
-}
-
-ul.entries .glyph {
-  display: inline-block;
-  width: 0.95em; height: 0.95em;
-  margin-right: 0.5ch;
-  vertical-align: middle;
 }
 
 ul.categories li {
@@ -418,6 +403,21 @@ body.page-article .site-foot { max-width: 52rem; }
   }
 }
 
+ul.releases { list-style: none; margin: 1.6rem 0 0; padding: 0; }
+ul.releases li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 1.4ch;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+ul.releases .ver { min-width: 3.2rem; font-weight: 700; }
+ul.releases .name { min-width: 8.5rem; color: var(--ink-soft); font-style: italic; }
+ul.releases .date { min-width: 6.5rem; color: var(--muted); }
+ul.releases .needs { color: var(--muted); }
+ul.releases li > a { margin-left: auto; }
+
 .doc-group { margin: 0 0 2.4rem; }
 .doc-group:last-of-type { margin-bottom: 0; }
 
@@ -531,6 +531,19 @@ figure.shot figcaption {
   font-size: 0.88rem;
   font-style: italic;
 }
+
+figure.diagram { margin: 1.6rem 0; max-width: var(--measure); }
+.diagram-scroll { overflow-x: auto; }
+figure.diagram svg { display: block; width: 100%; min-width: 34rem; height: auto; font-family: var(--serif); }
+figure.diagram figcaption { margin-top: 0.5rem; color: var(--muted); font-size: 0.88rem; font-style: italic; }
+.d-box { fill: var(--bg-inset); stroke: var(--rule); }
+.d-group { fill: none; stroke: var(--rule); }
+.d-hw { fill: none; stroke: var(--muted); stroke-dasharray: 4 3; }
+.d-line { stroke: var(--muted); }
+.d-name { fill: var(--ink); font-size: 15px; }
+.d-role { fill: var(--muted); font-size: 11.5px; }
+.d-label { fill: var(--muted); font-size: 12px; font-style: italic; }
+.d-link:hover, .d-link:focus-visible { text-decoration: underline; }
 
 .stub-note {
   margin: 1.4rem 0 0;
@@ -657,6 +670,5 @@ ol.install li { margin: 0 0 0.4rem; }
 
 @media (max-width: 34rem) {
   body { font-size: 18px; }
-  .index { grid-template-columns: 1fr; gap: 1.8rem; }
   .about p { text-align: left; }
 }

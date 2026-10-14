@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>moonshot · releases</title>
-<meta name="description" content="bootable images of moonshot and the source that built them.">
+<meta name="description" content="every moonshot release, with a link to its changelog.">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -14,7 +14,6 @@
   <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
   <nav class="cats" aria-label="categories">
     <a href="../technical/index.html">technical</a>
-    <a href="../blog/index.html">blog</a>
     <a href="../releases/index.html" class="here" aria-current="page">releases</a>
     <a href="../about/index.html">about</a>
     <a href="../meta/index.html">meta</a>
@@ -25,55 +24,25 @@
   <article class="article">
     <header class="article-head">
       <h1>releases</h1>
-      <p class="article-meta">bootable images and source code</p>
+      <p class="article-meta">every release, newest first</p>
     </header>
 
-    <h2>0.1.0 &ldquo;quiet boye&rdquo;</h2>
-    <p class="article-meta"><time datetime="2026-08-03">2026-08-03</time></p>
-
     <p>
-      the first release of moonshot. it boots via Multiboot + GRUB in QEMU, has
-      preemptive multitasking with a round-robin scheduler, its own pixel
-      framebuffer and font renderer, a tiled windowing layer, an interactive
-      shell with tab completion and command history, a built-in text editor with
-      syntax highlighting and visual selection, a c0 REPL with a JIT compiler, a
-      disk-backed filesystem with permissions, and ring-3 userspace with syscall
-      support.
+      each release is a tag on
+      <a href="https://github.com/cofflang/moonshot/releases">github.com/cofflang/moonshot</a>,
+      and what it changed is in the changelog there. the readme says how to
+      build and boot it. each release needs a given version of coff, which is
+      released on its own, see
+      <a href="https://cofflang.github.io/coff-website/releases/">the coff releases</a>.
     </p>
 
-    <p>
-      <a href="https://github.com/cofflang/moonshot">github.com/cofflang/moonshot</a>
-    </p>
-
-    <h3>boot the pre-built image</h3>
-
-    <p>
-      the repository includes a pre-built <code>moonshot.iso</code> you can boot
-      right away. you need <code>qemu-system-x86_64</code> installed:
-    </p>
-
-    <pre># create a disk image for the filesystem
-dd if=/dev/zero of=disk.img bs=512 count=20480
-
-# headless (serial console only)
-qemu-system-x86_64 -cdrom moonshot.iso -display none -no-reboot \
-  -serial file:serial.log -m 128 \
-  -drive file=disk.img,format=raw,if=ide,index=0,media=disk
-
-# interactive graphical window (needs qemu-ui-gtk on Arch)
-qemu-system-x86_64 -cdrom moonshot.iso -display gtk -m 128 \
-  -drive file=disk.img,format=raw,if=ide,index=0,media=disk</pre>
-
-    <div class="rule" role="separator" aria-hidden="true"></div>
-
-    <h2>source</h2>
-    <p>
-      moonshot lives at
-      <a href="https://github.com/cofflang/moonshot">github.com/cofflang/moonshot</a>.
-      <a class="int" href="../technical/coff/index.html">coff</a>, the self-hosted
-      compiler for <a class="int" href="../technical/c0/index.html">c0</a>, is at
-      <a href="https://github.com/cofflang/coff">github.com/cofflang/coff</a>.
-    </p>
+    <ul class="releases">
+        <li><span class="ver">0.5.0</span> <span class="name">&ldquo;kind goran&rdquo;</span> <span class="date">2026-10-14</span> <span class="needs">coff v0.6.0</span> <a href="https://github.com/cofflang/moonshot/releases/tag/v0.5.0">changelog</a></li>
+        <li><span class="ver">0.4.0</span> <span class="name">&ldquo;calm ruffs&rdquo;</span> <span class="date">2026-10-10</span> <span class="needs">coff v0.5.0</span> <a href="https://github.com/cofflang/moonshot/releases/tag/v0.4.0">changelog</a></li>
+        <li><span class="ver">0.3.0</span> <span class="name">&ldquo;honest pluto&rdquo;</span> <span class="date">2026-09-24</span> <span class="needs">coff v0.4.0</span> <a href="https://github.com/cofflang/moonshot/releases/tag/v0.3.0">changelog</a></li>
+        <li><span class="ver">0.2.0</span> <span class="name">&ldquo;gentle vinki&rdquo;</span> <span class="date">2026-09-16</span> <span class="needs">coff v0.3.1</span> <a href="https://github.com/cofflang/moonshot/releases/tag/v0.2.0">changelog</a></li>
+        <li><span class="ver">0.1.0</span> <span class="name">&ldquo;quiet boye&rdquo;</span> <span class="date">2026-08-03</span> <span class="needs"></span> <a href="https://github.com/cofflang/moonshot/releases/tag/v0.1.0">changelog</a></li>
+    </ul>
 
   </article>
 </main>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>moonshot · noter</title>
+<meta name="description" content="noter: the song format moonshot's piano roll saves, a list of notes rather than sound.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body class="page-article">
+
+<header class="site-head sub">
+  <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
+  <nav class="cats" aria-label="categories">
+    <a href="../../technical/index.html" class="here" aria-current="page">technical</a>
+    <a href="../../releases/index.html">releases</a>
+    <a href="../../about/index.html">about</a>
+    <a href="../../meta/index.html">meta</a>
+  </nav>
+</header>
+
+<main>
+  <article class="article">
+    <header class="article-head">
+      <p class="crumb"><a href="../index.html">technical</a></p>
+      <h1>noter</h1>
+      <p class="article-meta">song format</p>
+    </header>
+
+    <p>
+      noter is the format <a class="int" href="../lira/index.html">lira</a>
+      saves songs in. a <code>.not</code> file holds the notes themselves,
+      which pitch, when, for how long and how hard, and no sound at all. the
+      sound is made from the notes every time the song plays, through
+      <a class="int" href="../oljud/index.html">oljud</a>.
+    </p>
+
+    <h2>the layout</h2>
+    <p>
+      every field is a 64-bit little-endian number, so a c0 program reads any
+      field with one <code>load64</code>.
+    </p>
+    <pre><code>offset  field
+ 0      magic           "noter" and three zero bytes
+ 8      version         2
+16      steps per beat  lira uses 4, so a step is a sixteenth note
+24      tempo           beats per minute
+32      note count      n
+40      n notes, 40 bytes each:
+          +0  pitch      midi note number, 0-127, 60 is middle c
+          +8  start      in steps
+          +16 length     in steps, at least 1
+          +24 velocity   1-127
+          +32 instrument 0 square, 1 triangle, 2 sawtooth, 3 drum</code></pre>
+    <p>
+      notes are sorted by start, then by pitch, and no two notes share both. a file
+      that breaks any rule of the format is refused as a whole. version 1 files, which
+      have no instrument, still load as square waves.
+    </p>
+
+    <h2>from notes to sound</h2>
+    <p>
+      the synthesizer runs in ring 3 next to the format. a note's instrument picks its
+      wave, and its velocity how loud it is. up to eight notes sound at once, and the
+      notes sounding at the same moment are added together.
+    </p>
+
+    <nav class="related" aria-label="related documentation">
+      <h2>related</h2>
+      <ul>
+        <li><a href="../lira/index.html">lira</a></li>
+        <li><a href="../oljud/index.html">oljud</a></li>
+        <li><a href="../jakel/index.html">jakel</a></li>
+        <li><a href="../pensel/index.html">pensel</a></li>
+        <li><a href="../knekt/index.html">knekt</a></li>
+      </ul>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-foot">
+  <hr class="foot-rule">
+  <span class="mark foot-logo" aria-hidden="true"></span>
+  <hr class="foot-rule">
+</footer>
+
+</body>
+</html>

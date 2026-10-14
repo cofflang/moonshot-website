@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>moonshot · about</title>
-<meta name="description" content="moonshot, coff, the person building them, and the marks and licence they carry.">
+<meta name="description" content="what moonshot is and how it started.">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -14,7 +14,6 @@
   <a class="brand" href="../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
   <nav class="cats" aria-label="categories">
     <a href="../technical/index.html">technical</a>
-    <a href="../blog/index.html">blog</a>
     <a href="../releases/index.html">releases</a>
     <a href="../about/index.html" class="here" aria-current="page">about</a>
     <a href="../meta/index.html">meta</a>
@@ -25,13 +24,13 @@
   <article class="article">
     <header class="article-head">
       <h1>about</h1>
-      <p class="article-meta">moonshot and coff</p>
+      <p class="article-meta">moonshot</p>
     </header>
 
     <h2>how this started</h2>
     <p>
-      <a class="int" href="../technical/c0/index.html">c0</a> and
-      <a class="int" href="../technical/coff/index.html">coff</a> exist because writing a kernel in someone
+      <a href="https://cofflang.github.io/coff-website/language/">c0</a> and
+      <a href="https://cofflang.github.io/coff-website/compiler/">coff</a> exist because writing a kernel in someone
       else's language, compiled by someone else's compiler, would leave the most
       interesting layers of the machine unexplored.
     </p>
@@ -46,44 +45,102 @@
 
     <h2>the operating system</h2>
     <p>
-      moonshot is a operating system for x86_64, built from scratch, booted through Multiboot and GRUB and run, for now, under QEMU.
-      it is written in <a class="int" href="../technical/c0/index.html">c0</a>, a language built for the purpose, and compiled by <a class="int" href="../technical/coff/index.html">coff</a>, a toolchain built alongside it.
+      moonshot is an operating system for x86_64, built from scratch, booted through Multiboot and GRUB and run, for now, under QEMU.
+      it is written in <a href="https://cofflang.github.io/coff-website/language/">c0</a>, a language built for the purpose, and compiled by <a href="https://cofflang.github.io/coff-website/compiler/">coff</a>, a toolchain built alongside it.
     </p>
     <p>
-      the aim is a real graphical system. a linear
-      framebuffer with a hand-written font renderer already draws to the screen.
+      the kernel is a set of named parts. ring-3 programs reach them through
+      knekt's system calls, the shell and the editors call them directly, and
+      each part drives one piece of hardware.
     </p>
 
-    <figure class="shot">
-      <img src="../media/help-command.png" width="512" height="384"
-           alt="the help command output showing all builtin commands in aligned columns.">
-      <figcaption>the builtin shell command reference.</figcaption>
+    <figure class="diagram">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 760 410" role="img" aria-labelledby="kd-title kd-desc" xmlns="http://www.w3.org/2000/svg">
+        <title id="kd-title">how the parts of moonshot talk to each other</title>
+        <desc id="kd-desc">ring-3 programs (utsikt, gnista, lira, hylla) reach the kernel through system calls, and the kernel tasks (skalman, raket, skrift, pensel, jit) call into it directly. knekt connects chrone, jenna and lager, kakel and punkt, klick, jakel and oljud. each of those drives one piece of hardware, the timer, memory, the screen and keyboard, the mouse, the disk and the sound card.</desc>
+        <defs>
+        <marker id="d-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#7c7c7c"/></marker>
+        <marker id="d-arrow-back" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0 L0 5 L10 10 z" fill="#7c7c7c"/></marker>
+        </defs>
+        <rect class="d-group" x="10" y="10" width="420" height="96" rx="4"/>
+        <text class="d-label" x="22" y="30" text-anchor="start">ring-3 programs, each in a tavla</text>
+        <rect class="d-box" x="20" y="42" width="92" height="54" rx="4"/>
+        <a class="d-link" href="../technical/utsikt/index.html"><text class="d-name" x="66.0" y="67.0" text-anchor="middle">utsikt</text></a>
+        <text class="d-role" x="66.0" y="84.0" text-anchor="middle">browser, glimt</text>
+        <rect class="d-box" x="122" y="42" width="92" height="54" rx="4"/>
+        <a class="d-link" href="../technical/gnista/index.html"><text class="d-name" x="168.0" y="67.0" text-anchor="middle">gnista</text></a>
+        <text class="d-role" x="168.0" y="84.0" text-anchor="middle">game engine</text>
+        <rect class="d-box" x="224" y="42" width="92" height="54" rx="4"/>
+        <a class="d-link" href="../technical/lira/index.html"><text class="d-name" x="270.0" y="67.0" text-anchor="middle">lira</text></a>
+        <text class="d-role" x="270.0" y="84.0" text-anchor="middle">piano roll</text>
+        <rect class="d-box" x="326" y="42" width="92" height="54" rx="4"/>
+        <a class="d-link" href="../technical/hylla/index.html"><text class="d-name" x="372.0" y="67.0" text-anchor="middle">hylla</text></a>
+        <text class="d-role" x="372.0" y="84.0" text-anchor="middle">file manager</text>
+        <rect class="d-group" x="450" y="10" width="300" height="96" rx="4"/>
+        <text class="d-label" x="462" y="30" text-anchor="start">kernel tasks, one per window</text>
+        <rect class="d-box" x="460" y="42" width="100" height="54" rx="4"/>
+        <a class="d-link" href="../technical/skalman/index.html"><text class="d-name" x="510.0" y="67.0" text-anchor="middle">skalman</text></a>
+        <text class="d-role" x="510.0" y="84.0" text-anchor="middle">shell</text>
+        <rect class="d-box" x="570" y="42" width="170" height="54" rx="4"/>
+        <text class="d-name" x="655" y="67" text-anchor="middle"><a class="d-link" href="../technical/raket/index.html">raket</a> · <a class="d-link" href="../technical/skrift/index.html">skrift</a> · <a class="d-link" href="../technical/pensel/index.html">pensel</a> · <a class="d-link" href="../technical/jit/index.html">jit</a></text>
+        <text class="d-role" x="655" y="84" text-anchor="middle">login, editors, repl</text>
+        <line class="d-line" x1="220" y1="106" x2="220" y2="154" marker-end="url(#d-arrow)"/>
+        <text class="d-label" x="228" y="136" text-anchor="start">system calls</text>
+        <line class="d-line" x1="600" y1="106" x2="600" y2="154" marker-end="url(#d-arrow)"/>
+        <text class="d-label" x="608" y="136" text-anchor="start">function calls</text>
+        <rect class="d-box" x="10" y="156" width="740" height="40" rx="4"/>
+        <a class="d-link" href="../technical/knekt/index.html"><text class="d-name" x="277" y="181" text-anchor="start">knekt</text></a>
+        <text class="d-role" x="351" y="181" text-anchor="start">system calls, interrupts, boot</text>
+        <line class="d-line" x1="70.0" y1="196" x2="70.0" y2="250"/>
+        <rect class="d-box" x="20" y="250" width="100" height="58" rx="4"/>
+        <a class="d-link" href="../technical/chrone/index.html"><text class="d-name" x="70.0" y="277.0" text-anchor="middle">chrone</text></a>
+        <text class="d-role" x="70.0" y="294.0" text-anchor="middle">scheduler</text>
+        <line class="d-line" x1="70.0" y1="308" x2="70.0" y2="360" marker-start="url(#d-arrow-back)"/>
+        <rect class="d-hw" x="20" y="362" width="100" height="38" rx="4"/>
+        <text class="d-role" x="70.0" y="386" text-anchor="middle">timer</text>
+        <line class="d-line" x1="187.0" y1="196" x2="187.0" y2="250"/>
+        <rect class="d-box" x="132" y="250" width="110" height="58" rx="4"/>
+        <text class="d-name" x="187.0" y="277" text-anchor="middle"><a class="d-link" href="../technical/jenna/index.html">jenna</a> · <a class="d-link" href="../technical/lager/index.html">lager</a></text>
+        <text class="d-role" x="187.0" y="294" text-anchor="middle">memory</text>
+        <line class="d-line" x1="187.0" y1="308" x2="187.0" y2="360" marker-end="url(#d-arrow)" marker-start="url(#d-arrow-back)"/>
+        <rect class="d-hw" x="132" y="362" width="110" height="38" rx="4"/>
+        <text class="d-role" x="187.0" y="386" text-anchor="middle">memory</text>
+        <line class="d-line" x1="329.0" y1="196" x2="329.0" y2="250"/>
+        <rect class="d-box" x="254" y="250" width="150" height="58" rx="4"/>
+        <text class="d-name" x="329.0" y="277" text-anchor="middle"><a class="d-link" href="../technical/kakel/index.html">kakel</a> → <a class="d-link" href="../technical/punkt/index.html">punkt</a></text>
+        <text class="d-role" x="329.0" y="294" text-anchor="middle">windows, then pixels</text>
+        <line class="d-line" x1="289.5" y1="308" x2="289.5" y2="360" marker-end="url(#d-arrow)"/>
+        <rect class="d-hw" x="254" y="362" width="71" height="38" rx="4"/>
+        <text class="d-role" x="289.5" y="386" text-anchor="middle">screen</text>
+        <line class="d-line" x1="368.5" y1="308" x2="368.5" y2="360" marker-start="url(#d-arrow-back)"/>
+        <rect class="d-hw" x="333" y="362" width="71" height="38" rx="4"/>
+        <text class="d-role" x="368.5" y="386" text-anchor="middle">keyboard</text>
+        <line class="d-line" x1="466.0" y1="196" x2="466.0" y2="250"/>
+        <rect class="d-box" x="416" y="250" width="100" height="58" rx="4"/>
+        <a class="d-link" href="../technical/klick/index.html"><text class="d-name" x="466.0" y="277.0" text-anchor="middle">klick</text></a>
+        <text class="d-role" x="466.0" y="294.0" text-anchor="middle">mouse driver</text>
+        <line class="d-line" x1="466.0" y1="308" x2="466.0" y2="360" marker-start="url(#d-arrow-back)"/>
+        <rect class="d-hw" x="416" y="362" width="100" height="38" rx="4"/>
+        <text class="d-role" x="466.0" y="386" text-anchor="middle">mouse</text>
+        <line class="d-line" x1="578.0" y1="196" x2="578.0" y2="250"/>
+        <rect class="d-box" x="528" y="250" width="100" height="58" rx="4"/>
+        <a class="d-link" href="../technical/jakel/index.html"><text class="d-name" x="578.0" y="277.0" text-anchor="middle">jakel</text></a>
+        <text class="d-role" x="578.0" y="294.0" text-anchor="middle">filesystem</text>
+        <line class="d-line" x1="578.0" y1="308" x2="578.0" y2="360" marker-end="url(#d-arrow)" marker-start="url(#d-arrow-back)"/>
+        <rect class="d-hw" x="528" y="362" width="100" height="38" rx="4"/>
+        <text class="d-role" x="578.0" y="386" text-anchor="middle">disk</text>
+        <line class="d-line" x1="690.0" y1="196" x2="690.0" y2="250"/>
+        <rect class="d-box" x="640" y="250" width="100" height="58" rx="4"/>
+        <a class="d-link" href="../technical/oljud/index.html"><text class="d-name" x="690.0" y="277.0" text-anchor="middle">oljud</text></a>
+        <text class="d-role" x="690.0" y="294.0" text-anchor="middle">sound driver</text>
+        <line class="d-line" x1="690.0" y1="308" x2="690.0" y2="360" marker-end="url(#d-arrow)"/>
+        <rect class="d-hw" x="640" y="362" width="100" height="38" rx="4"/>
+        <text class="d-role" x="690.0" y="386" text-anchor="middle">sound card</text>
+        </svg>
+      </div>
+      <figcaption>how the parts of moonshot talk to each other. every name links to its page.</figcaption>
     </figure>
-
-    <div class="rule" role="separator" aria-hidden="true"></div>
-
-    <h2>the language and the compiler</h2>
-    <p>
-      <a class="int" href="../technical/c0/index.html">c0</a> is a small, C-like, imperative systems language and
-      <a class="int" href="../technical/coff/index.html">coff</a> is what compiles it. the two
-      exist above all for one reason, to be the language and toolchain that moonshot is
-      written in.
-    </p>
-    <p>
-      the compiler is self-hosted, which means it compiles its own source, and moonshot is built
-      exclusively through that self-hosted compiler, so the whole stack rests on as little
-      outside itself as it possibly can.
-    </p>
-
-    <div class="rule" role="separator" aria-hidden="true"></div>
-
-    <h2>licence</h2>
-    <p>
-      the code (moonshot, <a class="int" href="../technical/coff/index.html">coff</a> and <a class="int" href="../technical/c0/index.html">c0</a>) is licensed under the
-      <strong>GNU GPL, version 3 or later</strong>. anyone who distributes the software,
-      or a work built from it, must release their source under the same terms, so
-      everything downstream stays open.
-    </p>
 
   </article>
 </main>

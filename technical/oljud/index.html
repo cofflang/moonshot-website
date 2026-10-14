@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>moonshot · oljud</title>
+<meta name="description" content="oljud: moonshot's sound blaster 16 driver, which plays what ring-3 programs hand it.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body class="page-article">
+
+<header class="site-head sub">
+  <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
+  <nav class="cats" aria-label="categories">
+    <a href="../../technical/index.html" class="here" aria-current="page">technical</a>
+    <a href="../../releases/index.html">releases</a>
+    <a href="../../about/index.html">about</a>
+    <a href="../../meta/index.html">meta</a>
+  </nav>
+</header>
+
+<main>
+  <article class="article">
+    <header class="article-head">
+      <p class="crumb"><a href="../index.html">technical</a></p>
+      <h1>oljud</h1>
+      <p class="article-meta">sound blaster 16 driver</p>
+    </header>
+
+    <p>
+      oljud is moonshot's sound driver. it drives a sound blaster 16 and plays
+      whatever a ring-3 program hands it through <code>sound(buf, len)</code>,
+      one system call. samples are 8-bit mono at 22050 a second, where 128 is
+      silence, so a program can build sound with nothing but <code>store8</code>.
+    </p>
+
+    <h2>why this card</h2>
+    <p>
+      the sound blaster 16 is an isa card from 1992, and its age is the point.
+      everything about it sits at a fixed address, port 0x220, interrupt 5 and
+      the old isa dma controller. newer audio chips sit on the pci bus and have
+      to be found by walking it first, which moonshot does not do yet. qemu
+      emulates the card, and people still own the real thing.
+    </p>
+
+    <h2>how it plays</h2>
+    <p>
+      the dma controller loops over a buffer of two halves on its own, and the card
+      interrupts at the end of each half. while it reads one half, the interrupt
+      handler refills the other with what programs have queued, or with silence.
+    </p>
+    <p>
+      every program has a queue of its own, about three seconds long. <code>sound</code>
+      copies as much as fits and returns how much that was. <code>sound(0, 0)</code>
+      returns how much is still waiting and <code>sound(0, -1)</code> stops the
+      program's sound at once. the queues of all programs are mixed, so two programs
+      are heard together.
+    </p>
+
+    <nav class="related" aria-label="related documentation">
+      <h2>related</h2>
+      <ul>
+        <li><a href="../knekt/index.html">knekt</a></li>
+        <li><a href="../jenna/index.html">jenna</a></li>
+        <li><a href="../klick/index.html">klick</a></li>
+        <li><a href="https://cofflang.github.io/coff-website/compiler/">coff</a></li>
+      </ul>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-foot">
+  <hr class="foot-rule">
+  <span class="mark foot-logo" aria-hidden="true"></span>
+  <hr class="foot-rule">
+</footer>
+
+</body>
+</html>

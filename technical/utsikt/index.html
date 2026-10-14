@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>moonshot · utsikt</title>
+<meta name="description" content="utsikt: a browser engine written in c0, reading html and css off moonshot's filesystem and painting the result itself.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body class="page-article">
+
+<header class="site-head sub">
+  <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
+  <nav class="cats" aria-label="categories">
+    <a href="../../technical/index.html" class="here" aria-current="page">technical</a>
+    <a href="../../releases/index.html">releases</a>
+    <a href="../../about/index.html">about</a>
+    <a href="../../meta/index.html">meta</a>
+  </nav>
+</header>
+
+<main>
+  <article class="article">
+    <header class="article-head">
+      <p class="crumb"><a href="../index.html">technical</a></p>
+      <h1>utsikt</h1>
+      <p class="article-meta">a browser engine in c0</p>
+    </header>
+
+    <p>
+      utsikt reads an html file off
+      <a class="int" href="../jakel/index.html">jakel</a>, parses it into a
+      tree, applies a subset of css, lays the result out and paints it into a
+      window. it is an ordinary ring-3 program in a
+      <a class="int" href="../kakel/index.html">kakel</a> tavla, started with
+      <code>start utsikt.elf</code>, and it draws every pixel itself.
+    </p>
+    <p>
+      there is no networking, by decision. verk, the network stack, is the last
+      subsystem moonshot will get. until then a page is a file.
+    </p>
+
+    <figure class="shot">
+      <img src="../../media/utsikt-page.png" width="1024" height="768"
+           alt="a moonshot screen split into two tiles. on the left a shell prompt on black. on the right a tavla titled utsikt.elf showing a rendered web page on a light background: a large centred blue heading, a grey paragraph, a green-tinted box of text, section headings and wrapped body text with several words in bold.">
+      <figcaption>utsikt rendering <code>/index.html</code> in a tavla, beside a shell.</figcaption>
+    </figure>
+
+    <h2>html</h2>
+    <p>
+      the parser is forgiving. unclosed paragraphs, stray end tags and unknown elements
+      still give a page rather than nothing. headings, paragraphs, lists, tables,
+      <code>pre</code>, links, images and the common inline elements all have a default
+      style.
+    </p>
+
+    <h2>css</h2>
+    <p>
+      colours, backgrounds, text size and weight, alignment, block and inline, margins
+      and padding. selectors are a type (<code>p</code>), a class (<code>.lead</code>),
+      both (<code>p.lead</code>), comma-separated lists of those, and a descendant
+      selector of two (<code>.note code</code>). specificity counts the way css counts
+      it, and vertical margins collapse. a selector utsikt cannot represent is dropped
+      whole rather than applied in part.
+    </p>
+
+    <h2>layout</h2>
+    <p>
+      a line breaks only where a space was, so a word in bold followed by a full stop
+      stays together. a table is a grid of equal-width columns. an image is a sprite in
+      the format <a class="int" href="../pensel/index.html">pensel</a> saves, placed in
+      the line like a word. text is set in the kernel's own font, so a page and the shell
+      beside it look the same.
+    </p>
+
+    <h2>links</h2>
+    <p>
+      a click on a link loads the file it names, resolved from the root, and Backspace
+      goes back. a link to another host is left alone. a strip along the bottom of the
+      window says which file is open. a page's memory is given back to
+      <a class="int" href="../lager/index.html">lager</a> when the next one has loaded, so
+      following links costs nothing that stays.
+    </p>
+
+    <h2>scripts</h2>
+    <p>
+      utsikt will not run javascript. it has an interface instead, where a scripting
+      engine registers the <code>&lt;script type&gt;</code> it runs and reaches the page
+      only through a small set of calls. the engine moonshot uses is
+      <a class="int" href="../glimt/index.html">glimt</a>.
+    </p>
+
+    <h2>its own repository</h2>
+    <p>
+      utsikt is developed in
+      <a href="https://github.com/cofflang/utsikt">github.com/cofflang/utsikt</a>,
+      and moonshot carries a copy of it in <code>programs/utsikt/</code>.
+      contributions go to utsikt.
+    </p>
+
+    <nav class="related" aria-label="related documentation">
+      <h2>related</h2>
+      <ul>
+        <li><a href="../knekt/index.html">knekt</a></li>
+        <li><a href="../punkt/index.html">punkt</a></li>
+        <li><a href="../kakel/index.html">kakel</a></li>
+        <li><a href="../jakel/index.html">jakel</a></li>
+        <li><a href="../gnista/index.html">gnista</a></li>
+        <li><a href="https://cofflang.github.io/coff-website/language/">c0</a></li>
+        <li><a href="../lager/index.html">lager</a></li>
+        <li><a href="../glimt/index.html">glimt</a></li>
+      </ul>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-foot">
+  <hr class="foot-rule">
+  <span class="mark foot-logo" aria-hidden="true"></span>
+  <hr class="foot-rule">
+</footer>
+
+</body>
+</html>

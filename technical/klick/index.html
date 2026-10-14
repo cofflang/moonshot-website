@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>moonshot · klick</title>
+<meta name="description" content="klick: moonshot's PS/2 mouse driver, the pointer and its buttons.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body class="page-article">
+
+<header class="site-head sub">
+  <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
+  <nav class="cats" aria-label="categories">
+    <a href="../../technical/index.html" class="here" aria-current="page">technical</a>
+    <a href="../../releases/index.html">releases</a>
+    <a href="../../about/index.html">about</a>
+    <a href="../../meta/index.html">meta</a>
+  </nav>
+</header>
+
+<main>
+  <article class="article">
+    <header class="article-head">
+      <p class="crumb"><a href="../index.html">technical</a></p>
+      <h1>klick</h1>
+      <p class="article-meta">the ps/2 mouse driver, the pointer, where it is and what is pressed</p>
+    </header>
+
+    <p>
+      klick is moonshot's mouse driver. it brings up the ps/2 mouse, decodes
+      the packets it sends, draws the pointer on the framebuffer and tells
+      whoever is listening what the mouse did.
+    </p>
+
+    <figure class="shot">
+      <img src="../../media/klick-pointer.png" width="512" height="384"
+           alt="a moonshot shell window with the mouse command's output showing pointer coordinates, button states and a packet count, and a small white pointer square in the middle of the screen.">
+      <figcaption>the pointer, and the <code>mouse</code> command, in a debug build, reporting position, buttons and packet count.</figcaption>
+    </figure>
+
+    <h2>one controller, two devices</h2>
+    <p>
+      the mouse hangs off the same 8042 controller as the keyboard, and every byte to
+      and from it goes through the keyboard's own data port. a bit in the status register
+      says which device a byte came from, and klick checks it every time, so mouse bytes
+      never turn into keystrokes and keystrokes are never lost. the mouse interrupts on
+      IRQ12, on the slave pic.
+    </p>
+
+    <h2>packets</h2>
+    <p>
+      a packet is three bytes, a flag byte with the three buttons and the signs of the
+      movement, then the x and y movement. a packet that is out of sync or that
+      overflowed is dropped rather than turned into a jump of the pointer.
+    </p>
+
+    <h2>the pointer</h2>
+    <p>
+      klick draws the pointer itself and saves the pixels under it, so it can float over
+      anything. anything that paints an area under the pointer lifts it first and puts it
+      back afterwards, so a program repainting its window does not make it vanish.
+    </p>
+
+    <h2>who listens</h2>
+    <p>
+      a ring-3 program asks for the pointer with <code>SYS_MOUSE_POLL</code> and gets
+      where it is in its own window and which buttons are down, or -1 when the pointer
+      is outside. the buttons only reach the focused window, and never the click that
+      focused it.
+    </p>
+
+    <nav class="related" aria-label="related documentation">
+      <h2>related</h2>
+      <ul>
+        <li><a href="../punkt/index.html">punkt</a></li>
+        <li><a href="../kakel/index.html">kakel</a></li>
+        <li><a href="../knekt/index.html">knekt</a></li>
+        <li><a href="../skalman/index.html">skalman</a></li>
+        <li><a href="../pensel/index.html">pensel</a></li>
+        <li><a href="../gnista/index.html">gnista</a></li>
+      </ul>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-foot">
+  <hr class="foot-rule">
+  <span class="mark foot-logo" aria-hidden="true"></span>
+  <hr class="foot-rule">
+</footer>
+
+</body>
+</html>

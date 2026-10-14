@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>moonshot · pensel</title>
+<meta name="description" content="pensel: moonshot's pixel art editor and the sprite file a game reads back.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body class="page-article">
+
+<header class="site-head sub">
+  <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
+  <nav class="cats" aria-label="categories">
+    <a href="../../technical/index.html" class="here" aria-current="page">technical</a>
+    <a href="../../releases/index.html">releases</a>
+    <a href="../../about/index.html">about</a>
+    <a href="../../meta/index.html">meta</a>
+  </nav>
+</header>
+
+<main>
+  <article class="article">
+    <header class="article-head">
+      <p class="crumb"><a href="../index.html">technical</a></p>
+      <h1>pensel</h1>
+      <p class="article-meta">the pixel art editor and the sprite file a game reads back</p>
+    </header>
+
+    <p>
+      pensel is moonshot's pixel art editor.
+      it takes over one window and paints the sprite being edited as a zoomed
+      grid. on the way out it writes the result to
+      <a class="int" href="../jakel/index.html">jakel</a> as a file a game can
+      load. <code>draw (file)</code> opens it and <code>draw (file) (size)</code>
+      opens it at a given canvas size, square, from 4 to 64 pixels across.
+    </p>
+
+    <figure class="shot">
+      <img src="../../media/pensel-canvas.png" width="512" height="384"
+           alt="a moonshot screen with pensel open in the top-left corner. a sixteen by sixteen grid shows a drawn red mushroom with white spots and a pale stem with two dark eyes, on a grey checkerboard standing for transparency. a two-column palette of colour swatches sits to the right of the grid, with a diagonal red slash marking the transparent slot. a title line above reads 'pensel: hero.spr 16x16  [s]ave [c]lear [q]uit'.">
+      <figcaption>a sprite drawn on the machine itself, on the transparency checkerboard, with the palette beside it.</figcaption>
+    </figure>
+
+    <h2>drawing</h2>
+    <p>
+      the left mouse button paints the cell under the pointer, and dragging paints a
+      stroke. the right button erases. a click on the palette picks a colour. an empty
+      cell shows as a checkerboard, so transparent and black look different.
+    </p>
+
+    <h2>keys</h2>
+    <dl>
+      <dt><code>s</code></dt>
+      <dd>save.</dd>
+      <dt><code>c</code></dt>
+      <dd>clear the canvas.</dd>
+      <dt><code>n</code>, <code>d</code></dt>
+      <dd>add a frame after this one, as a copy of it, or delete this frame.</dd>
+      <dt><code>,</code> and <code>.</code></dt>
+      <dd>step back and forward through the frames.</dd>
+      <dt><code>q</code>, escape</dt>
+      <dd>quit, saving if anything was painted.</dd>
+    </dl>
+    <p>
+      on every frame but the first, an empty pixel shows the frame before it faintly, so
+      movement is drawn against where things just were. how many frames fit depends on
+      the size, eight at 16 by 16, four at 32 by 32 and one at 64 by 64.
+    </p>
+
+    <h2>the file</h2>
+    <p>
+      a sprite file is a short header followed by pixels, little-endian throughout. a
+      game reads it back with <code>readfile()</code>, so
+      <a class="int" href="../gnista/index.html">gnista</a> can show art drawn on the
+      machine itself, with no rebuild.
+    </p>
+    <pre><code>  0..7   width in pixels
+  8..15  height
+ 16..23  frame count
+ 24..    frames * width * height * 4 bytes, BGR0 per pixel</code></pre>
+    <p>
+      a pixel of all zeroes is transparent, so the palette's black is a near-black.
+    </p>
+
+    <nav class="related" aria-label="related documentation">
+      <h2>related</h2>
+      <ul>
+        <li><a href="../klick/index.html">klick</a></li>
+        <li><a href="../gnista/index.html">gnista</a></li>
+        <li><a href="../jakel/index.html">jakel</a></li>
+        <li><a href="../kakel/index.html">kakel</a></li>
+        <li><a href="../punkt/index.html">punkt</a></li>
+        <li><a href="../skrift/index.html">skrift</a></li>
+      </ul>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-foot">
+  <hr class="foot-rule">
+  <span class="mark foot-logo" aria-hidden="true"></span>
+  <hr class="foot-rule">
+</footer>
+
+</body>
+</html>

@@ -14,7 +14,6 @@
   <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
   <nav class="cats" aria-label="categories">
     <a href="../../technical/index.html" class="here" aria-current="page">technical</a>
-    <a href="../../blog/index.html">blog</a>
     <a href="../../releases/index.html">releases</a>
     <a href="../../about/index.html">about</a>
     <a href="../../meta/index.html">meta</a>
@@ -35,50 +34,35 @@
 
     <h2>getting a framebuffer</h2>
     <p>
-      the kernel's Multiboot header asks the bootloader for a linear graphics mode,
-      1024×768 at 32 bits per pixel, and GRUB sets the hardware into it before the kernel
-      runs a single instruction. GRUB reports back where the framebuffer lives, and that
-      physical range sits far outside anything the kernel maps by default, so punkt's
-      setup identity-maps it into the kernel's own page tables through
-      <a class="int" href="../jenna/index.html">jenna</a>. one thing the probe does not trust is <!-- TODO: Break link -->
-      GRUB's report of the colour-channel positions, which is wrong under QEMU, so punkt pins
-      the layout it has verified
-      (XRGB)<span class="sn"><label class="sn-marker" for="sn-chan">†</label><input type="checkbox" id="sn-chan" class="sn-toggle"><span class="sidenote">a wrong channel order is invisible for grey pixels, which look the same under any order, and only shows on a strongly coloured screen.</span></span>
-      instead.
+      the kernel's Multiboot header asks the bootloader for 1024×768 at 32 bits per pixel,
+      and GRUB sets the hardware into it before the kernel runs. punkt maps the
+      framebuffer GRUB reports into the kernel's page tables through
+      <a class="int" href="../jenna/index.html">jenna</a>. when no framebuffer is granted, <!-- TODO: Break link -->
+      the kernel falls back to VGA text mode.
     </p>
 
     <h2>the font</h2>
     <p>
-      the font is an original 8×8 bitmap. uppercase, lowercase, digits, and punctuation.
-      each glyph is stored as two 32-bit halves rather than one 64-bit
-      value.<span class="sn"><label class="sn-marker" for="sn-halves">†</label><input type="checkbox" id="sn-halves" class="sn-toggle"><span class="sidenote">c0 has no unsigned type and a glyph whose top-left pixel is lit would make a single packed 64-bit value negative, which breaks extracting bytes with division. any 32-bit pattern stays positive, so the split sidesteps the whole problem.</span></span> <!-- TODO: Link c0 to tech doc -->
+      the font is an original 8×8 bitmap with uppercase, lowercase, digits and
+      punctuation. a ring-3 program can ask for a glyph through <code>SYS_GLYPH</code>
+      and draw text into its own frame, which is how
+      <a class="int" href="../utsikt/index.html">utsikt</a> sets a page in the same face
+      the shell uses.
     </p>
 
-    <h2>the renderer</h2>
+    <h2>the console</h2>
     <p>
-      above the raw pixels sits a character-cell console. a 128×96 grid of 8×8 cells, with
-      the cursor drawn as a two-pixel underline in the current cell, the same shape VGA
-      text mode's hardware cursor has. it handles newline, wrapping, backspace, tab stops,
-      and scrolling, where the whole screen's pixels shift up one character row. drawing
-      primitives (filled and outlined rectangles, horizontal and vertical lines) started
-      out as groundwork for the windowing layer, which now exists.
-      <a class="int" href="../kakel/index.html">kakel</a> builds its tiled windows on punkt's <!-- TODO: Break link -->
-      primitives, while punkt stays the single owner of the real framebuffer underneath.
-    </p>
-
-    <h2>the fallback</h2>
-    <p>
-      when no usable framebuffer is granted, the kernel falls back to VGA text mode. the
-      choice is effectively made at build time, whichever video mode the Multiboot header
-      requests is what GRUB commits the hardware to before the kernel starts, so the text
-      path is kept alive by its own test build rather than by runtime switching.
+      above the raw pixels sits a character-cell console, a 128×96 grid of 8×8 cells with
+      newline, wrapping, backspace, tab stops and scrolling. punkt also draws rectangles
+      and lines, and <a class="int" href="../kakel/index.html">kakel</a> builds its tiled <!-- TODO: Break link -->
+      windows on them, while punkt stays the single owner of the real framebuffer.
     </p>
 
     <nav class="related" aria-label="related documentation">
       <h2>related</h2>
       <ul> <!-- TODO: Break links -->
-        <li><a href="../c0/index.html">c0</a></li>
-        <li><a href="../coff/index.html">coff</a></li>
+        <li><a href="https://cofflang.github.io/coff-website/language/">c0</a></li>
+        <li><a href="https://cofflang.github.io/coff-website/compiler/">coff</a></li>
         <li><a href="../knekt/index.html">knekt</a></li>
         <li><a href="../jenna/index.html">jenna</a></li>
         <li><a href="../chrone/index.html">chrone</a></li>
