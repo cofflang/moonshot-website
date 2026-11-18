@@ -36,15 +36,15 @@
 
     <figure class="shot">
       <img src="../../media/klick-pointer.png" width="512" height="384"
-           alt="a moonshot shell window with the mouse command's output showing pointer coordinates, button states and a packet count, and a small white pointer square in the middle of the screen.">
-      <figcaption>the pointer, and the <code>mouse</code> command, in a debug build, reporting position, buttons and packet count.</figcaption>
+           alt="a moonshot shell window with the mouse command's output showing pointer coordinates, button states and a packet count. a small white pointer square sits in the middle of the screen.">
+      <figcaption>the pointer and the <code>mouse</code> command, in a debug build, reporting position, buttons and packet count.</figcaption>
     </figure>
 
     <h2>one controller, two devices</h2>
     <p>
-      the mouse hangs off the same 8042 controller as the keyboard, and every byte to
+      the mouse hangs off the same 8042 controller as the keyboard. every byte to
       and from it goes through the keyboard's own data port. a bit in the status register
-      says which device a byte came from, and klick checks it every time, so mouse bytes
+      says which device a byte came from. klick checks it every time, so mouse bytes
       never turn into keystrokes and keystrokes are never lost. the mouse interrupts on
       IRQ12, on the slave pic.
     </p>
@@ -55,20 +55,28 @@
       movement, then the x and y movement. a packet that is out of sync or that
       overflowed is dropped rather than turned into a jump of the pointer.
     </p>
+    <p>
+      at start klick asks for the sample rates 200, 100 and 80 in a row, which a mouse
+      with a wheel answers by calling itself device 3 and sending a fourth byte, the
+      wheel's steps. those go to the program whose window is under the pointer, which
+      reads them with <code>SYS_WHEEL</code>.
+    </p>
 
     <h2>the pointer</h2>
     <p>
       klick draws the pointer itself and saves the pixels under it, so it can float over
       anything. anything that paints an area under the pointer lifts it first and puts it
       back afterwards, so a program repainting its window does not make it vanish.
+      over a program's window it can take another shape the program asks for with
+      <code>SYS_POINTER</code>, arrows left and right for something that stretches or
+      four ways for something that drags, 13 pixels square around the point.
     </p>
 
     <h2>who listens</h2>
     <p>
       a ring-3 program asks for the pointer with <code>SYS_MOUSE_POLL</code> and gets
       where it is in its own window and which buttons are down, or -1 when the pointer
-      is outside. the buttons only reach the focused window, and never the click that
-      focused it.
+      is outside. the buttons only reach the focused window. the click that focused it never reaches the program.
     </p>
 
     <nav class="related" aria-label="related documentation">

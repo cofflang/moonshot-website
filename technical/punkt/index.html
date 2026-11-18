@@ -34,8 +34,8 @@
 
     <h2>getting a framebuffer</h2>
     <p>
-      the kernel's Multiboot header asks the bootloader for 1024×768 at 32 bits per pixel,
-      and GRUB sets the hardware into it before the kernel runs. punkt maps the
+      the kernel's Multiboot header asks the bootloader for 1024×768 at 32 bits per pixel.
+      GRUB sets the hardware into it before the kernel runs. punkt maps the
       framebuffer GRUB reports into the kernel's page tables through
       <a class="int" href="../jenna/index.html">jenna</a>. when no framebuffer is granted, <!-- TODO: Break link -->
       the kernel falls back to VGA text mode.
@@ -54,7 +54,7 @@
     <p>
       above the raw pixels sits a character-cell console, a 128×96 grid of 8×8 cells with
       newline, wrapping, backspace, tab stops and scrolling. punkt also draws rectangles
-      and lines, and <a class="int" href="../kakel/index.html">kakel</a> builds its tiled <!-- TODO: Break link -->
+      and lines. <a class="int" href="../kakel/index.html">kakel</a> builds its tiled <!-- TODO: Break link -->
       windows on them, while punkt stays the single owner of the real framebuffer.
     </p>
 

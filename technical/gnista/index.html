@@ -31,8 +31,8 @@
     <p>
       gnista is a game engine built from scratch in
       <a href="https://cofflang.github.io/coff-website/language/">c0</a>, running as a
-      windowed ring-3 program on moonshot. the engine and moonshot are grown together,
-      and every real limitation the engine hits becomes a fix in the kernel or the
+      windowed ring-3 program on moonshot. the engine and moonshot are grown together.
+      every real limitation the engine hits becomes a fix in the kernel or the
       compiler. infecteria is the game built on it.
     </p>
 
@@ -40,7 +40,7 @@
     <p>
       an entity is a <code>layout</code> with a position, a size, a velocity, a kind and a
       few fields the game uses as it likes. entities live in a pool allocated once at
-      startup, and their slots are reused. a wall is an ordinary entity that never moves,
+      startup. their slots are reused. a wall is an ordinary entity that never moves,
       so one collision routine and one drawing routine cover everything.
     </p>
 
@@ -62,8 +62,8 @@
     <p>
       sprites are loaded at run time from the files
       <a class="int" href="../pensel/index.html">pensel</a> saves, so art drawn on the
-      machine shows up in a game with no rebuild. a sprite file can hold several frames,
-      and an animation clip is a run of them. a game carries fallback art for when nothing
+      machine shows up in a game with no rebuild. a sprite file can hold several frames.
+      an animation clip is a run of them. a game carries fallback art for when nothing
       has been drawn yet.
     </p>
 
@@ -74,9 +74,30 @@
     </p>
     <figure class="shot">
       <img src="../../media/infecteria-title.png" width="512" height="384"
-           alt="a moonshot screen with an empty shell on the left and infecteria on the right. on a dark blue background the word infecteria is written in large green letters, a small green bacterium sits under it, and below are three lines of small text: arrows move, e absorb a cell, q make it a factory; outrun the red ones: only your factories can hurt them; space to start, esc to quit.">
+           alt="a moonshot screen with an empty shell on the left and infecteria on the right. on a dark blue background the word infecteria is written in large green letters, a small green bacterium sits under it. below are three lines of small text: arrows move, e absorb a cell, q make it a factory; outrun the red ones: only your factories can hurt them; space to start, esc to quit.">
       <figcaption>infecteria's title scene, drawn with gnista's own text in the kernel's font.</figcaption>
     </figure>
+
+    <h2>3D, djup</h2>
+    <p>
+      djup draws meshes of coloured triangles through an orbit camera, with flat
+      shading from one light and a depth buffer, in whole numbers only, 16.16 fixed
+      point. faces turned away from the camera are left out. it can also say which
+      face is under each pixel, which is how
+      <a class="int" href="../form/index.html">form</a> picks a face with a click.
+      a mesh is a <code>.form</code> file, which form makes.
+    </p>
+    <pre><code>offset  field
+ 0      magic         "form" and four zero bytes
+ 8      version       1
+16      vertex count  v
+24      face count    f
+32      v vertices    x y z, fixed point, 24 bytes each
+..      f faces       three vertex numbers and a colour 0xRRGGBB, 32 bytes each</code></pre>
+    <p>
+      a face's corners go counterclockwise seen from outside, which is the side that
+      is drawn.
+    </p>
 
     <h2>infecteria</h2>
     <p>

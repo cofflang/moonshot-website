@@ -31,20 +31,32 @@
     <p>
       hylla shows the files and folders of
       <a class="int" href="../jakel/index.html">jakel</a> as icons and opens
-      whatever is clicked. it is an ordinary ring-3 program, started from the
-      shell with <code>start hylla.elf</code>.
+      whatever is clicked. it is an ordinary ring-3 program, open on the right
+      after login. it is started from the shell with <code>start hylla.elf</code>.
+    </p>
+    <p>
+      names are shown without their ending, since the icon already says what a file
+      is. a name too long for its place under the icon goes on over more lines,
+      its row growing to fit. <kbd>t</kbd>, or a click on the word at the right of the
+      top bar, switches to a tree of every folder from the root, where a click opens
+      or closes a folder and opens anything else.
     </p>
 
     <figure class="shot">
       <img src="../../media/hylla.png" width="512" height="384"
-           alt="a moonshot screen with the shell on the left and hylla on the right. hylla shows the root folder as a grid of icons with names under them on a dark blue background: plain pages for demo.c0, a yellow folder named test, green program icons with a white triangle for infecteria, utsikt.elf, lira.elf and hylla.elf, pages with blue lines for index.html and about.html, a picture icon for moon.spr and a page with a purple note for demo.not. a dark bar along the top shows the path, a single slash.">
+           alt="a moonshot screen with the shell on the left and hylla on the right. hylla shows the root folder as a grid of icons with names under them on a dark blue background, plain pages for demo.c0, a yellow folder named test, green program icons with a white triangle for infecteria, utsikt.elf, lira.elf and hylla.elf, pages with blue lines for index.html and about.html, a picture icon for moon.spr and a page with a purple note for demo.not. a dark bar along the top shows the path, a single slash.">
       <figcaption>the root folder, each kind of file with its own icon.</figcaption>
+    </figure>
+
+    <figure class="shot">
+      <img src="../../media/hylla-tree.png" width="512" height="384"
+           alt="the same screen with hylla showing the tree instead. every file of the root is a row with a small icon and its name. at the bottom the folder songs is open, marked with a minus, holding gubben and the open folder old, with first and notes in it. the top bar reads icons at its right, the word that switches back.">
+      <figcaption>the tree, opened down to the folder hylla was started in.</figcaption>
     </figure>
 
     <h2>finding and opening</h2>
     <p>
-      hylla does not rename, move or delete anything. names are given in the shell, and
-      hylla is for finding things and opening them. the kind of a file is its ending.
+      hylla does not rename, move or delete anything. names are given in the shell, since hylla is for finding things and opening them. the kind of a file is its ending.
     </p>
     <table>
       <thead><tr><th>ending</th><th>opens in</th></tr></thead>
@@ -55,12 +67,28 @@
         <tr><td><code>.not</code></td><td><a class="int" href="../lira/index.html">lira</a></td></tr>
         <tr><td><code>.spr</code></td><td><a class="int" href="../pensel/index.html">pensel</a></td></tr>
         <tr><td><code>.c0</code>, <code>.txt</code></td><td><a class="int" href="../skrift/index.html">skrift</a></td></tr>
+        <tr><td><code>.form</code></td><td><a class="int" href="../form/index.html">form</a></td></tr>
+        <tr><td><code>.sk</code></td><td>runs in a new shell window, see <a class="int" href="../skalman/index.html">skalman</a></td></tr>
       </tbody>
     </table>
     <p>
       backspace goes up a folder and <code>r</code> reads the folder again. the
       background is whatever <code>hylla.bg</code> in the root says, a colour such as
       <code>#203040</code> or the name of a picture drawn as tiles.
+    </p>
+
+    <h2>a picture for the background</h2>
+    <p>
+      <code>tapet.elf</code> makes a picture of a diagonal weave.
+      <code>start tapet.elf picture.spr 7 64 48</code> gives the file, a seed, a
+      width and a height. the same arguments give the same pixels.
+      <code>write hylla.bg picture.spr</code> tiles it behind the icons.
+    </p>
+    <p>
+      hylla starts a program only from a file that its user or root owns and
+      says <code>not started, another user owns</code> and the name when the file
+      belongs to someone else. a picture another user made can be the
+      background through <code>hylla.bg</code>, since a picture is data.
     </p>
 
     <nav class="related" aria-label="related documentation">

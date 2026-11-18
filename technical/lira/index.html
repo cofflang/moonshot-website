@@ -33,14 +33,12 @@
       written by clicking notes onto it. it plays the song through
       <a class="int" href="../oljud/index.html">oljud</a> and saves it as a
       <a class="int" href="../noter/index.html">noter</a> file. it is an
-      ordinary ring-3 program. <code>start lira.elf</code> starts it in a
-      window of its own, and so does a click on a song in
-      <a class="int" href="../hylla/index.html">hylla</a>.
+      ordinary ring-3 program that <code>start lira.elf</code> starts in a window of its own, as does a click on a song in <a class="int" href="../hylla/index.html">hylla</a> starts it too.
     </p>
 
     <figure class="shot">
       <img src="../../media/lira-demo.png" width="512" height="384"
-           alt="a moonshot screen with the shell on the left and lira on the right. lira shows a grid of dark rows named from d6 at the top down through the octaves, the song in the middle, with bar numbers 1, 2 and 3 along the top and lighter lines at every beat. amber bars mark the notes of gubben noak: three short c4 notes, then e4, three d4 notes and f4, and below them long c3 and g3 bass notes. a pale bar inside each note shows its velocity, shorter in the bass notes. a status line at the bottom reads 'demo.not  120 bpm  note 4 steps  vel 100  18 notes'.">
+           alt="a moonshot screen with the shell on the left and lira on the right. lira shows a grid of dark rows named from c#6 at the top down through the octaves, with bar numbers 1, 2 and 3 along the top and lighter lines at every beat. amber bars mark the notes of gubben noak, three short c4 notes, then e4, three d4 notes and f4. below them are long c3 and g3 bass notes. a pale bar inside each note shows its velocity, shorter in the bass notes. along the bottom are four instrument buttons, square (picked), triangle, saw and drum, each with its own colour. under them a status line reads 'h help  demo.not  120 bpm  vel 100  square pan C  18 notes'.">
       <figcaption>the demo song, gubben noak, as lira opens it.</figcaption>
     </figure>
 
@@ -49,20 +47,39 @@
       type <code>start lira.elf mysong.not</code> in the shell, then press
       <kbd>alt-tab</kbd> or click lira's window to give it the keyboard. rows
       are pitches and columns are steps, four to a beat and four beats to a
-      bar. click a cell and a note goes in, click it again and it goes away.
+      bar. the left button puts a note in. the right button takes it away.
       press <kbd>space</kbd> to hear the song and <kbd>s</kbd> to save, then
       type <code>sync</code> in the shell to keep it after a restart. without
-      a file name lira edits <code>song.not</code>.
+      a file name the song is new. <kbd>s</kbd> asks for a name.
     </p>
+
+    <h2>the mouse</h2>
+    <dl class="commands">
+      <dt>left button</dt>
+      <dd>puts a note in an empty cell. held and moved right, the note grows with it.</dd>
+      <dt>right button</dt>
+      <dd>takes away the note under it.</dd>
+      <dt>a note's ends</dt>
+      <dd>drag to make it shorter or longer. the pointer turns to arrows left and right.</dd>
+      <dt>a note's middle</dt>
+      <dd>drag up or down for how loud it is, or left or right for where it sits
+      between the speakers. the way it moves first decides which. the pointer turns to
+      arrows four ways. a note panned away from the middle has a red mark along its top, where it sits.</dd>
+      <dt>the buttons along the bottom</dt>
+      <dd>the instrument new notes get, square, triangle, sawtooth or drum.</dd>
+    </dl>
 
     <h2>keys</h2>
     <dl class="commands">
-      <dt>click</dt>
-      <dd>puts a note in an empty cell, or takes away the note that is there.</dd>
       <dt>1 2 3 4</dt>
-      <dd>the instrument new notes get, square, triangle, sawtooth or drum.</dd>
-      <dt>[ ]</dt>
-      <dd>halve or double the length new notes get.</dd>
+      <dd>the instrument, as its button does. it is also the one the next three keys act on.</dd>
+      <dt>m</dt>
+      <dd>mute that instrument, or hear it again. its notes turn dark.</dd>
+      <dt>o</dt>
+      <dd>solo it, so only it is heard, or hear everything again.</dd>
+      <dt>p P</dt>
+      <dd>move it a step right or left between the speakers, nine steps in all. the
+      pan is saved with the song, mute and solo are not.</dd>
       <dt>, .</dt>
       <dd>quieter or louder new notes.</dd>
       <dt>- =</dt>

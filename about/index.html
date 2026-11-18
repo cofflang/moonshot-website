@@ -46,19 +46,18 @@
     <h2>the operating system</h2>
     <p>
       moonshot is an operating system for x86_64, built from scratch, booted through Multiboot and GRUB and run, for now, under QEMU.
-      it is written in <a href="https://cofflang.github.io/coff-website/language/">c0</a>, a language built for the purpose, and compiled by <a href="https://cofflang.github.io/coff-website/compiler/">coff</a>, a toolchain built alongside it.
+      it is written in <a href="https://cofflang.github.io/coff-website/language/">c0</a>, a language built for the purpose. <a href="https://cofflang.github.io/coff-website/compiler/">coff</a>, a toolchain built alongside it, compiles it.
     </p>
     <p>
       the kernel is a set of named parts. ring-3 programs reach them through
-      knekt's system calls, the shell and the editors call them directly, and
-      each part drives one piece of hardware.
+      knekt's system calls, the shell and the editors call them directly. each part drives one piece of hardware.
     </p>
 
     <figure class="diagram">
       <div class="diagram-scroll">
         <svg viewBox="0 0 760 410" role="img" aria-labelledby="kd-title kd-desc" xmlns="http://www.w3.org/2000/svg">
         <title id="kd-title">how the parts of moonshot talk to each other</title>
-        <desc id="kd-desc">ring-3 programs (utsikt, gnista, lira, hylla) reach the kernel through system calls, and the kernel tasks (skalman, raket, skrift, pensel, jit) call into it directly. knekt connects chrone, jenna and lager, kakel and punkt, klick, jakel and oljud. each of those drives one piece of hardware, the timer, memory, the screen and keyboard, the mouse, the disk and the sound card.</desc>
+        <desc id="kd-desc">ring-3 programs (utsikt, gnista, lira, hylla) reach the kernel through system calls. the kernel tasks (skalman, raket, skrift, pensel, jit) call into it directly. knekt connects chrone, jenna and lager, kakel and punkt, klick, jakel and oljud. each of those drives one piece of hardware, the timer, memory, the screen and keyboard, the mouse, the disk and the sound card.</desc>
         <defs>
         <marker id="d-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#7c7c7c"/></marker>
         <marker id="d-arrow-back" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0 L0 5 L10 10 z" fill="#7c7c7c"/></marker>

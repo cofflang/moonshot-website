@@ -38,35 +38,62 @@
     <h2>layout</h2>
     <p>
       boot starts with one full-screen window above a one-row status bar. each
-      <code>split</code> adds a window, up to a 2×2 grid, and <code>close</code> removes
-      the focused one. the status bar at the bottom shows uptime, running tasks, disk
-      and memory use, with a meter that turns amber and then red as the disk or memory
-      fills.
+      <code>split</code> adds a window, up to a 2×2 grid. <code>close</code> removes
+      the focused one. the status bar at the bottom shows uptime, disk and memory use,
+      with a meter that turns amber and then red as the disk or memory fills. it also shows the
+      day, the date and the time, as utc plus the offset set with <code>zone</code> and saved in <code>tid.zone</code> in the root.
+    </p>
+    <p>
+      a graphical program's window has a title strip with the program's name and
+      the window's number. at its right end are two boxes. <code>[+]</code> fills the screen and turns into <code>[-]</code>, which gives it back. <code>[x]</code> closes the window, the same as <kbd>alt-w</kbd>.
+    </p>
+    <p>
+      <kbd>alt-m</kbd> makes the focused window fill the screen. <kbd>alt-m</kbd> again puts every
+      window back where it was. the others keep running behind it, but draw nothing
+      until they are shown again. <kbd>alt-tab</kbd> while a window fills the screen brings
+      the next one up in its place. opening or closing a window goes back to
+      the usual layout.
     </p>
 
     <h2>focus</h2>
     <p>
-      keyboard input goes to the window with focus. Alt+Tab moves focus through the
-      windows in reading order, and a left click gives focus to the window under the
+      keyboard input goes to the window with focus. <kbd>alt-tab</kbd> moves focus through the
+      windows in reading order. a left click gives focus to the window under the
       pointer. that click does only that, so the first click on a browser does not
       follow a link. the next click belongs to the program.
     </p>
 
+    <p>
+      a program cannot move the keyboard focus away from a window it does not
+      own. when the folder a window is working in is removed, the window goes
+      back to <code>/</code> and says so.
+    </p>
     <h2>tavla</h2>
     <p>
       a graphical ring-3 program gets a <strong>tavla</strong>, an ordinary tile with a
       one-row title strip the program cannot draw over. the strip names the program,
-      is bright when the window has focus and dim when it does not, and offers the way
-      out, <code>alt+w</code> closes the tavla and stops the program. while a tavla has
-      focus every key goes to its program, except <code>alt+w</code> and Alt+Tab, so a
+      is bright when the window has focus and dim when it does not. it offers the way
+      out, <kbd>alt-w</kbd> closes the tavla and stops the program. a program can ask
+      for <kbd>alt-w</kbd> as a key instead, as skrift, pensel and form do, so they can save or ask
+      first. one that asks and then stops listening is stopped by the next <kbd>alt-w</kbd> a
+      second later. while a tavla has focus
+      every key goes to its program, except <kbd>alt-w</kbd>, <kbd>alt-m</kbd> and <kbd>alt-tab</kbd>, so a
       tavla can always be left or closed.
     </p>
 
     <p>
       when the layout changes, a program in a tavla finds out through
       <code>win_info()</code> and redraws its own window. every ring-3 program started
-      with <code>start</code> gets a window of its own, and whatever it prints lands
+      with <code>start</code> gets a window of its own. whatever it prints lands
       there.
+    </p>
+
+    <h2>the screen saver</h2>
+    <p>
+      <code>dvala</code> draws a field of stars when the machine has been idle.
+      it is off at boot. <code>dvala on</code> waits five minutes,
+      <code>dvala 90</code> waits ninety seconds and <code>dvala off</code>
+      turns it off. <code>dvala</code> alone says the wait in seconds. a key press ends it.
     </p>
 
     <nav class="related" aria-label="related documentation">

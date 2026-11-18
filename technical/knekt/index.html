@@ -29,7 +29,7 @@
     </header>
 
     <p>
-      knekt is the kernel core. most of what the kernel does lives in the named parts around it, and knekt is the piece that wires them together.
+      knekt is the kernel core. most of what the kernel does lives in the named parts around it. knekt is the piece that wires them together.
     </p>
 
     <h2>boot</h2>
@@ -42,26 +42,54 @@
       the interrupt table and the timer. then it tiles the screen into windows
       (<a class="int" href="../kakel/index.html">kakel</a>), starts a shell in each <!-- TODO: Break link -->
       (<a class="int" href="../skalman/index.html">skalman</a>) along with the scheduler <!-- TODO: Break link -->
-      (<a class="int" href="../chrone/index.html">chrone</a>), and brings up the
-      filesystem (<a class="int" href="../jakel/index.html">jakel</a>). <!-- TODO: Break link -->
+      (<a class="int" href="../chrone/index.html">chrone</a>). it brings up the filesystem (<a class="int" href="../jakel/index.html">jakel</a>). <!-- TODO: Break link -->
     </p>
 
     <h2>when things go wrong</h2>
     <p>
-      a fault in a ring-3 program ends that program and nothing else. a fault in the
-      kernel prints the vector, the error code, the faulting address and the instruction
-      pointer over serial and halts. a fixed capacity in the kernel that fills up says so
-      on the serial port rather than dropping work without a word.
+      a fault in a ring-3 program ends that program. a fault at a guarded user-copy
+      instruction releases the calling program's temporary kernel resources and ends
+      that program through a separate abort path. recovery requires a matching active
+      transfer and saved kernel frame, so an arbitrary kernel fault cannot take this
+      path. outside the authorized boot probe, other kernel faults print a diagnostic
+      over serial and halt. a fixed capacity in the kernel that fills up says so on
+      the serial port rather than dropping work without a word. the serial line
+      takes one whole log line at a time. what a program prints reaches it as
+      whole lines too, so a timer tick or another program never cuts a line in
+      two.
     </p>
 
     <h2>ring 3</h2>
     <p>
       programs are static elf64 executables, usually read from
       <a class="int" href="../jakel/index.html">jakel</a>. each runs in ring 3 with page
-      tables, a kernel stack and a heap of its own, and talks to the kernel through the
+      tables, a kernel stack and a heap of its own. each talks to the kernel through the
       <code>syscall</code> instruction. in coff's <code>--elf</code> mode a program reaches
       them through builtins such as <code>win_info()</code> and
       <code>readfile()</code>.
+    </p>
+    <p>
+      a program's code can be run but never written. its data, heap and stack are written but never run. a program that makes machine code, like utsikt's glimt, asks
+      <code>SYS_PROTECT</code> to turn a page read-only and runnable first, so no
+      page is both at once. the kernel refuses to start a program with a segment that can be both written and run.
+    </p>
+
+    <h2>user memory</h2>
+    <p>
+      a system call checks the whole byte range it will consume before drawing,
+      changing a file or starting another program. the range must fit without
+      overflow and belong to the caller's mapped pages. every level of the page
+      tables must allow user access, with write permission when the kernel will
+      write. a reserved heap address without a mapping does not pass this check.
+      bounded text is copied once and stops at its first zero byte or capacity. a range that wraps around or is negative is refused. a program that asks for one is stopped while the kernel goes on.
+    </p>
+    <p>
+      preflight and transfer run with interrupts off on one processor, keeping the
+      mappings stable between the check and the access. copies use registered
+      assembly instructions with a bounded abort path. a fault during an accepted
+      transfer ends the caller and releases its temporary storage. file growth keeps
+      the old storage and metadata until the copy succeeds. bytes already written
+      to an existing file or framebuffer are not rolled back after such a fault.
     </p>
 
     <h2>system calls</h2>
@@ -80,16 +108,32 @@
         <tr><td>9</td><td><code>SYS_PRESENT</code></td><td>buf</td><td>0, or -1 with no window</td></tr>
         <tr><td>10</td><td><code>SYS_WIN_MAX</code></td><td>none</td><td><code>width * 65536 + height</code></td></tr>
         <tr><td>11</td><td><code>SYS_MOUSE_POLL</code></td><td>none</td><td><code>(x * 1024 + y) * 8 + buttons</code>, window-relative, or -1 when the pointer is not over the window</td></tr>
-        <tr><td>12</td><td><code>SYS_GLYPH</code></td><td>ch, buf</td><td><code>cell width * 65536 + cell height</code>, and the glyph's rows written to <code>buf</code></td></tr>
+        <tr><td>12</td><td><code>SYS_GLYPH</code></td><td>ch, buf</td><td><code>cell width * 65536 + cell height</code>. the glyph's rows written to <code>buf</code></td></tr>
         <tr><td>13</td><td><code>SYS_DEALLOC</code></td><td>ptr</td><td>0, or -1 when <code>ptr</code> is not the start of a live block</td></tr>
-        <tr><td>14</td><td><code>SYS_SOUND</code></td><td>buf, len</td><td>bytes queued for <a class="int" href="../oljud/index.html">oljud</a>, or the bytes still waiting when <code>buf</code> is 0, or with <code>len</code> -1 as well, stops all sound and returns what was dropped, and -1 with no sound card</td></tr>
+        <tr><td>14</td><td><code>SYS_SOUND</code></td><td>buf, len</td><td>bytes queued for <a class="int" href="../oljud/index.html">oljud</a>, or the bytes still waiting when <code>buf</code> is 0, or with <code>len</code> -1 as well, stops all sound and returns what was dropped. with no sound card it returns -1</td></tr>
         <tr><td>15</td><td><code>SYS_WRITEFILE</code></td><td>name, buf, len</td><td><code>len</code>, or -1</td></tr>
         <tr><td>16</td><td><code>SYS_SLEEP</code></td><td>ticks</td><td>0, after the ticks have passed</td></tr>
         <tr><td>17</td><td><code>SYS_ARGC</code></td><td>none</td><td>how many arguments the task was started with</td></tr>
         <tr><td>18</td><td><code>SYS_ARGV</code></td><td>i</td><td>argument <code>i</code> in the task's own memory, or 0</td></tr>
         <tr><td>19</td><td><code>SYS_LISTDIR</code></td><td>path, buf, max</td><td>how many entries were written, or -1 when the path is not a directory</td></tr>
-        <tr><td>20</td><td><code>SYS_SPAWN</code></td><td>line</td><td>the new task's id, or a negative error</td></tr>
+        <tr><td>20</td><td><code>SYS_SPAWN</code></td><td>line, flags</td><td>the new task's id, or a negative error. flag 1 runs it in the background with no window, printing to the serial line only, flag 2 finds names from the caller's folder</td></tr>
         <tr><td>21</td><td><code>SYS_PROTECT</code></td><td>addr, pages, mode</td><td>0, or -1 when a page is not the task's own heap</td></tr>
+        <tr><td>22</td><td><code>SYS_EDIT</code></td><td>path</td><td>the editor's task id, or -1</td></tr>
+        <tr><td>23</td><td><code>SYS_OPEN</code></td><td>path, mode</td><td>an fd, 3 or more, or -1. mode 0 reads, mode 1 writes, creating the file or emptying it first</td></tr>
+        <tr><td>24</td><td><code>SYS_READ</code></td><td>fd, buf, n</td><td>bytes read from where the last read ended, 0 at the end, or -1</td></tr>
+        <tr><td>25</td><td><code>SYS_WRITE</code></td><td>fd, buf, n</td><td><code>n</code>, or -1. fd 1 and 2 are the program's window</td></tr>
+        <tr><td>26</td><td><code>SYS_CLOSE</code></td><td>fd</td><td>0, or -1 when the fd is not open</td></tr>
+        <tr><td>27</td><td><code>SYS_EXIT_CLOSE</code></td><td>code</td><td>does not return. ends the task like <code>SYS_EXIT</code> and closes its window too</td></tr>
+        <tr><td>28</td><td><code>SYS_SHELL</code></td><td>line, typed into a new shell window in the caller's folder</td><td>the new shell window's id, -1 for a bad line, or -3 when there is no room</td></tr>
+        <tr><td>29</td><td><code>SYS_WAIT</code></td><td>tid, ticks</td><td>the task's exit code once it ends, -1000 when it crashed or was killed, -1002 when it still runs after ticks (0 waits as long as it takes)</td></tr>
+        <tr><td>30</td><td><code>SYS_REMOVE</code></td><td>path</td><td>0 once the file is gone, or -1. never a folder</td></tr>
+        <tr><td>31</td><td><code>SYS_SOUND_FORMAT</code></td><td>fmt</td><td>0, or -1. 0 is 8-bit mono, 1 16-bit mono, 2 16-bit stereo</td></tr>
+        <tr><td>32</td><td><code>SYS_CLOSE_KEY</code></td><td>on</td><td>0. with on 1, <kbd>alt-w</kbd> sends the program the key 127 instead of stopping it</td></tr>
+        <tr><td>33</td><td><code>SYS_CLOCK</code></td><td>what, value</td><td>0 utc seconds since 1970, 1 milliseconds since boot, 2 the offset in minutes, 3 sets the offset</td></tr>
+        <tr><td>34</td><td><code>SYS_INFO</code></td><td>what, buf, max</td><td>bytes written. 0 the machine's counters, 1 every task, 2 the hardware</td></tr>
+        <tr><td>35</td><td><code>SYS_KILL</code></td><td>tid</td><td>0 once the task is stopped, or -1. only root, or the user the task runs as, may stop it</td></tr>
+        <tr><td>36</td><td><code>SYS_POINTER</code></td><td>shape for the pointer over the caller's window, 0 block, 1 arrows left and right, 2 four ways</td><td>0, or -1 for a shape there is none of</td></tr>
+        <tr><td>37</td><td><code>SYS_WHEEL</code></td><td>none</td><td>the wheel's steps over the caller's window since it last asked</td></tr>
       </tbody>
     </table>
     <p>
@@ -99,6 +143,23 @@
       font bitmap instead of drawing text. keys reach a program only while its
       <a class="int" href="../kakel/index.html">tavla</a> has focus, through a queue of its
       own.
+    </p>
+    <p>
+      <code>SYS_OPEN</code> to <code>SYS_CLOSE</code>, 23 to 26, are ordinary files, eight open at a time per program. in
+      <code>--elf</code> mode coff turns <code>open_read</code>,
+      <code>open_write</code>, <code>read</code>, <code>write</code> and
+      <code>close</code> into them, so a program written for files on linux
+      runs here unchanged. a path starts from the folder the program was started
+      in, or from the root when it begins with <code>/</code>. coff and smed are
+      two such programs. moonshot carries both. it builds a program on its own,
+      with the shell's <code>execute</code> or step by step.
+    </p>
+<pre><code>start coff.elf --elf hello.c0 hello.s
+start smed.elf --base 0x80000000 hello.s hello.elf
+start hello.elf</code></pre>
+    <p>
+      the <code>hello.s</code> coff writes on moonshot is the same, byte for
+      byte, as the one coff writes on linux.
     </p>
 
     <nav class="related" aria-label="related documentation">

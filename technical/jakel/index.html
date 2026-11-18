@@ -29,7 +29,7 @@
     </header>
 
     <p>
-      jakel is the filesystem. files and directories live in memory as a tree, and an
+      jakel is the filesystem. files and directories live in memory as a tree. an
       <span class="wip">ata pio driver</span> underneath saves the whole tree to a raw
       disk image, so files survive reboots.
     </p>
@@ -42,7 +42,7 @@
     </p>
     <p>
       paths are slash-separated. an absolute path starts with <code>/</code>, anything
-      else resolves from the current working directory, and <code>..</code> goes up one
+      else resolves from the current working directory. <code>..</code> goes up one
       level.
     </p>
 
@@ -58,11 +58,34 @@
       <li><code>sync</code> save all files to disk</li>
     </ul>
 
+    <h2>who may change what</h2>
+    <p>
+      every call into jakel names the user acting. only root or the owner may
+      change a file or move it. a refused write leaves the file as it was.
+      in a folder where others may add files, the root folder among them, nobody
+      can overwrite or empty a file that someone else made there, root included.
+      remove it first. anyone may make files in the root folder, only root may
+      make folders there. the kernel takes back <code>tid.zone</code> if
+      another user made it first.
+    </p>
+    <p>
+      owners and modes are not saved and a loaded file belongs to root, so these
+      rules keep users apart for the length of one boot and not across boots.
+    </p>
+
     <h2>on disk</h2>
     <p>
       <code>sync</code> writes the whole filesystem to the disk, a superblock, the node
-      table and the file data, and the next boot loads it back. a fresh filesystem is
+      table and the file data. the next boot loads it back. a fresh filesystem is
       saved at once, so the second boot always loads from disk.
+    </p>
+    <p>
+      <code>sync</code> writes only to a disk with moonshot's magic.
+      <code>sync create</code> makes one after a typed confirmation. every write
+      returns a status. a timeout or an error is reported. saving is not
+      safe against a power cut, so a failure can leave the disk incomplete. a
+      file that changes while <code>sync</code> runs may be saved half old and
+      half new.
     </p>
 
     <nav class="related" aria-label="related documentation">

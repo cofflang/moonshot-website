@@ -29,32 +29,38 @@
     </header>
 
     <p>
-      raket is what stands between
-      boot finishing and a shell being usable. every session boots to a login
-      prompt, username then password, and only gets handed to the shell once that
-      succeeds. the accounts are root and guest on a fresh boot, and
-      <code>passwd</code> and <code>adduser</code> in the shell change that.
+      raket is what stands between boot finishing and anything being usable. with
+      windows, boot ends on a login screen that covers everything, a username and a password, where only a correct pair shows the windows. the accounts are root and guest on a fresh boot, so <code>passwd</code> and <code>adduser</code> in the
+      shell change that.
     </p>
+
+    <figure class="shot">
+      <img src="../../media/login.png" width="512" height="384"
+           alt="the moonshot login screen, moonshot written large in the middle of an even slate blue screen, a username field holding root with an orange edge, an empty password field under it. a line under them says tab or a click switches field, enter logs in.">
+      <figcaption>the login screen at boot.</figcaption>
+    </figure>
 
     <h2>logging in</h2>
     <p>
-      an unknown username still goes on to the password prompt, so a failed login does
-      not say whether the user exists. an account with no password logs in on an empty
-      password line. password characters echo as <code>*</code> and never enter the
-      shell's history.
+      the login screen is the first thing drawn after the kernel's own checks, so
+      nothing of the windows behind it is ever seen. <kbd>enter</kbd> goes from the
+      username to the password and then logs in. <kbd>tab</kbd>, the up and down
+      arrows or a click move between the two. the password shows as dots. a wrong pair
+      gets a red line and does not say whether the user exists. an account with no
+      password logs in on an empty one.
     </p>
     <p>
-      raket is not a task of its own. the shell's line handler sends a completed line to
-      raket while the session is logged out and to the shell once it is in, so editing a
-      login field works exactly like editing a command.
+      the first login assigns that user to the shell windows. each split inherits its initiating session and a program-created shell inherits the program identity. replacing the last window preserves its principal instead of borrowing the screen owner. the first login
+      opens <a class="int" href="../hylla/index.html">hylla</a> on the right of the
+      shell. <kbd>alt-l</kbd> locks the screen. everything keeps running behind it but nothing is shown, while only the same user's password opens it again. users are kept apart only
+      for the length of one boot. the person at the keyboard can use every open
+      window, root's included, so lock the screen with <kbd>alt-l</kbd> before
+      leaving it.
     </p>
-
-    <h2>windows and sessions</h2>
     <p>
-      a newly opened window starts at the login prompt. a window made with
-      <a class="int" href="../skalman/index.html">skalman</a>'s <code>split</code> from a
-      logged-in session takes over its user and working directory, so you log in once per
-      boot, not once per window.
+      without windows, on the plain text screen, each session asks for a login at its
+      own prompt instead. password characters echo as <code>*</code>.
+      <code>login</code> in the shell changes the user of one session.
     </p>
 
     <nav class="related" aria-label="related documentation">

@@ -29,49 +29,67 @@
     </header>
 
     <p>
-      skrift is moonshot's text editor. it runs inside a
-      <a class="int" href="../kakel/index.html">kakel</a> window and reads and writes
-      files through <a class="int" href="../jakel/index.html">jakel</a>. type
-      <code>edit (filename)</code> in
-      <a class="int" href="../skalman/index.html">skalman</a> to open a file. quitting
-      saves it, and <code>sync</code> in the shell puts it on disk.
+      skrift is moonshot's text editor. it is an ordinary ring-3 program in a
+      <a class="int" href="../kakel/index.html">kakel</a> window of its own.
+      type <code>edit (filename)</code> in
+      <a class="int" href="../skalman/index.html">skalman</a>, or click a text
+      file in <a class="int" href="../hylla/index.html">hylla</a>. a name that does
+      not exist yet is a new file.
     </p>
 
-    <h2>modes</h2>
+    <figure class="shot">
+      <img src="../../media/skrift.png" width="512" height="384"
+           alt="a moonshot screen with the shell on the left and skrift on the right, editing hello.c0. keywords are orange, the string is green and the comment grey, with line numbers down the left. one line is selected, the top bar says selected 50, line 3/6, col 5. the bar along the bottom lists ^C copy, ^X cut, Del delete, F3 find this and Esc deselect.">
+      <figcaption>hello.c0 with a line selected. the bottom bar shows what can be done with it.</figcaption>
+    </figure>
+
     <p>
-      insert mode is home, you open a file and start typing. escape enters command mode,
-      where single keys trigger actions, and <code>i</code> or escape goes back. arrow
-      keys move the cursor in both modes, and <code>h</code> in command mode shows a key
-      reference.
+      there are no modes. typing types, while the keys for everything else are
+      along the bottom of the window. they change with what can be done right now,
+      so a selection shows copy and cut and the find prompt shows next and previous.
     </p>
 
+    <h2>keys</h2>
     <dl>
-      <dt><code>q</code></dt>
-      <dd>save and quit.</dd>
-      <dt><code>x</code>, <code>dd</code>, <code>yy</code></dt>
-      <dd>delete the character under the cursor, delete the line, copy the line. a
-      count in front repeats, so <code>3dd</code> deletes three lines.</dd>
-      <dt><code>cc</code>, <code>cw</code></dt>
-      <dd>change the line, or the rest of the word, and go to insert mode.</dd>
-      <dt><code>u</code></dt>
-      <dd>undo the last change. undo is single-level.</dd>
-      <dt><code>gg</code>, <code>G</code>, <code>5G</code></dt>
-      <dd>go to the first line, the last line, line 5.</dd>
-      <dt><code>e</code>, <code>E</code>, <code>r</code></dt>
-      <dd>evaluate the current line as c0 through the repl and show the result, insert
-      it as a comment below, or run the whole buffer.</dd>
+      <dt><kbd>F2</kbd></dt>
+      <dd>save. <code>sync</code> in the shell puts it on disk.</dd>
+      <dt><kbd>F3</kbd></dt>
+      <dd>find. the match is selected as you type, <kbd>enter</kbd> goes to the
+      next one and <kbd>shift-enter</kbd> to the one before.</dd>
+      <dt><kbd>F4</kbd></dt>
+      <dd>go to a line.</dd>
+      <dt><kbd>F5</kbd></dt>
+      <dd>save and run the file, c0 only. a new shell window runs
+      <code>execute</code> on it, so the program gets a window of its own and
+      any error from coff stays in the shell. with text selected only the
+      selection runs, as a program of its own when it has a <code>main</code>,
+      else as <code>main</code>'s body. copying another user's text into a file of your own or running a selection with <kbd>F5</kbd> or <kbd>F6</kbd>, is running it.</dd>
+      <dt><kbd>F6</kbd></dt>
+      <dd>show the value of the selection or the line as c0, such as
+      <code>6 * 7</code>. skrift builds it as a small program with coff and
+      smed and runs it, so nothing runs in the kernel. what has not answered after
+      three seconds is stopped.</dd>
+      <dt><kbd>alt-w</kbd></dt>
+      <dd>quit. with unsaved changes it asks first, while a second <kbd>alt-w</kbd>
+      quits without saving.</dd>
+      <dt><kbd>ctrl-c</kbd>, <kbd>ctrl-x</kbd>, <kbd>ctrl-v</kbd></dt>
+      <dd>copy, cut and paste. with nothing selected they work on the whole line.
+      a whole line pasted goes in above the cursor's line.</dd>
+      <dt><kbd>ctrl-z</kbd>, <kbd>ctrl-y</kbd></dt>
+      <dd>undo and redo, as far back as the file was opened. a word typed in one
+      go is one step.</dd>
+      <dt><kbd>ctrl-a</kbd></dt>
+      <dd>select everything.</dd>
+      <dt><kbd>esc</kbd></dt>
+      <dd>close a prompt, or drop the selection.</dd>
     </dl>
     <p>
-      <kbd>ctrl-a</kbd> and <kbd>ctrl-e</kbd> jump to the start and end of the line,
-      <kbd>ctrl-k</kbd> deletes to the end of the line and <kbd>ctrl-d</kbd> deletes the
-      character under the cursor, in both modes.
-    </p>
-
-    <h2>selection</h2>
-    <p>
-      hold <kbd>shift</kbd> with the arrow keys to select text. in command mode
-      <code>d</code> and <code>x</code> delete the selection, <code>y</code> copies it
-      and <code>e</code> evaluates it. typing in insert mode replaces it.
+      the arrows, <kbd>home</kbd>, <kbd>end</kbd>, <kbd>page up</kbd> and
+      <kbd>page down</kbd> move, with <kbd>ctrl</kbd> by word or to the start and
+      end of the file. with <kbd>shift</kbd> they select. <kbd>home</kbd> goes to
+      the first non-blank character on the line and then to the very start. a click puts the
+      cursor there and a drag selects. <kbd>enter</kbd> keeps the indentation of
+      the line it splits.
     </p>
 
     <nav class="related" aria-label="related documentation">

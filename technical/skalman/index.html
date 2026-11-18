@@ -32,25 +32,25 @@
       skalman is moonshot's command line. it reads a line of keystrokes, echoes them to
       the screen and on Enter runs the named command. there is one shell session per
       <a class="int" href="../kakel/index.html">kakel</a> window, so a half-typed command
-      survives switching focus away and back, and a command's output lands in the window
-      it was typed in.
+      survives switching focus away and back. a command's output lands in the window
+      it was typed in. the window keeps its text when the layout changes, when a program
+      opens beside it, when a window fills the screen and when the screen is locked.
     </p>
 
     <h2>editing a line</h2>
     <p>
       the arrow keys move within the line and up and down go through the history. home
-      and end, or <kbd>ctrl-a</kbd> and <kbd>ctrl-e</kbd>, jump to the start and end,
-      <kbd>ctrl-w</kbd> deletes the word before the cursor and <kbd>ctrl-k</kbd> the rest
-      of the line. tab completes a command name or, after the first word, a file name,
-      and a second tab lists the candidates. double quotes keep spaces inside one
+      and end, or <kbd>ctrl-a</kbd> and <kbd>ctrl-e</kbd>, go to the ends of the line.
+      <kbd>ctrl-w</kbd> deletes the word before the cursor, <kbd>ctrl-k</kbd> deletes to
+      the end of the line and <kbd>ctrl-u</kbd> to the start. tab completes a command name or, after the first word, a file name.
+      a second tab lists the candidates. double quotes keep spaces inside one
       argument, as in <code>write "my file.txt" hello</code>.
     </p>
 
     <h2>command reference</h2>
     <p>
       type <code>help</code> for the current list, or <code>help (command)</code> for what one
-      command takes and does. arguments are written in parentheses, and optional ones in
-      brackets. every path may contain slashes.
+      command takes and does. arguments are written in parentheses, with optional ones in brackets. every path may contain slashes.
     </p>
     <dl class="commands">
       <dt>help [command]</dt>
@@ -58,7 +58,7 @@
       <dt>clear</dt>
       <dd>clears the focused window.</dd>
       <dt>echo (text)</dt>
-      <dd>prints its argument back. <code>echo --file (path)</code> prints a file's contents.</dd>
+      <dd>prints its argument back. <code>echo --file (path)</code> prints a file's contents, however long the file is.</dd>
       <dt>list (path)</dt>
       <dd>shows the contents of a directory, with sizes and permissions.</dd>
       <dt>change (path)</dt>
@@ -74,63 +74,159 @@
       <dt>rename (src) (dst)</dt>
       <dd>renames or moves a file or directory across directories.</dd>
       <dt>count (file)</dt>
-      <dd>prints lines, words, and bytes in a file.</dd>
+      <dd>prints lines, words and bytes in a file. a last line with no newline after
+      it counts as a line.</dd>
       <dt>where</dt>
       <dd>prints the current working directory path.</dd>
-      <dt>sync</dt>
-      <dd>persists all files to disk.</dd>
+      <dt>zone [offset]</dt>
+      <dd>shows the local time and its offset from utc, <code>14:05, UTC+1</code>. with an offset it sets it, <code>zone +1</code>, <code>zone -3:30</code> or <code>zone 5:45</code>, from -24 to +24 hours. any logged in user may set it. it is saved in <code>tid.zone</code>. there is no summer time.</dd>
+      <dt>besikta</dt>
+      <dd>prints the memory map, the disk, the framebuffer and the processor the machine reports.</dd>
+      <dt>dvala [on | off | seconds]</dt>
+      <dd>the screen saver, see <a class="int" href="../kakel/index.html">kakel</a>.</dd>
+      <dt>sync [create]</dt>
+      <dd>saves the filesystem to a disk that carries moonshot's magic and says when a write failed. a file that changes while it runs may be saved half old and half new. <code>sync create</code> makes such a disk, after a typed confirmation.</dd>
       <dt>mode (path) (level)</dt>
       <dd>sets file permissions to <code>public</code>, <code>private</code>, or <code>locked</code>.</dd>
       <dt>own (path) (user)</dt>
-      <dd>changes a file's owner.</dd>
+      <dd>changes a file's owner. only root may do this.</dd>
       <dt>whoami</dt>
       <dd>prints the current user name.</dd>
       <dt>login (name)</dt>
-      <dd>switches user for this session, with optional password.</dd>
-      <dt>passwd (user) (password)</dt>
-      <dd>sets or changes a user's password.</dd>
+      <dd>asks for the password at a masked prompt and switches the window to that user when it matches.</dd>
+      <dt>passwd [user]</dt>
+      <dd>changes your password after checking the old one, then asks for the new password twice. root may change another account's password without the old one.</dd>
       <dt>adduser (name)</dt>
-      <dd>creates a new user. the user table is fixed-size.</dd>
+      <dd>creates a new user. only root may. the user table is fixed-size.</dd>
       <dt>eval (expr)</dt>
       <dd>evaluates a c0 expression through the repl. <code>eval -c</code> uses the jit compiler.</dd>
       <dt>interpret (file)</dt>
       <dd>runs a c0 source file line by line through the repl interpreter.</dd>
       <dt>edit (file)</dt>
-      <dd>opens a file in the <a class="int" href="../skrift/index.html">skrift</a> text editor.</dd>
+      <dd>opens a file in the <a class="int" href="../skrift/index.html">skrift</a> text editor, in a window of its own.</dd>
       <dt>draw (file) [size]</dt>
-      <dd>opens a sprite in the <a class="int" href="../pensel/index.html">pensel</a> pixel editor.</dd>
+      <dd>opens a picture in the <a class="int" href="../pensel/index.html">pensel</a> pixel editor, in a window of its own.</dd>
       <dt>start (program) [arguments]</dt>
       <dd>runs a program from <a class="int" href="../jakel/index.html">jakel</a> in ring 3,
       in a <a class="int" href="../kakel/index.html">kakel</a> window of its own. the words
       after the name are its arguments, so <code>start lira.elf mysong.not</code> opens
       that song.</dd>
+      <dt>execute (file.c0)</dt>
+      <dd>compiles a c0 program with coff, links it with smed and starts it, all on
+      moonshot. the program stays next to its source as <code>file.elf</code>, so
+      <code>start file.elf</code> runs it again without compiling. an error stops it
+      at the step that failed, with that step's own message. coff and smed are in the root as <code>coff.elf</code> and <code>smed.elf</code>. <code>hello.c0</code> is there to try them on.</dd>
+      <dt>run (script.sk) [arguments]</dt>
+      <dd>runs a script, see scripts below.</dd>
       <dt>tasks</dt>
       <dd>lists every task in the scheduler table.</dd>
       <dt>kill (id)</dt>
-      <dd>stops a task by the id <code>tasks</code> shows.</dd>
+      <dd>stops a task by the id <code>tasks</code> shows. only root, or the user the task runs as, may stop it.</dd>
       <dt>split</dt>
-      <dd>adds a new window to the grid, logged in as the same user.</dd>
+      <dd>adds a new window to the grid, logged in as the same user. the shell prompts the window whose line it just finished, so the prompt is back after <code>split</code> and after <code>start</code>.</dd>
       <dt>close</dt>
-      <dd>removes the focused window, and stops the program in a
-      <a class="int" href="../kakel/index.html">tavla</a>. <code>alt+w</code> does the
-      same.</dd>
+      <dd>removes the focused window and stops the program in a <a class="int" href="../kakel/index.html">tavla</a>, as <kbd>alt-w</kbd> does.</dd>
     </dl>
 
     <h2>the repl</h2>
     <p>
       <code>eval (expr)</code> runs c0 statements through an interpreter, with variables
-      that last for the session, if and else, while and for loops, and
-      <code>print()</code>. <code>eval -c</code> compiles them to machine code with the
+      that last for the session, if and else, while and for loops and <code>print()</code>. <code>eval -c</code> compiles them to machine code with the
       <a class="int" href="../jit/index.html">jit</a> instead. <code>interpret demo.c0</code>
       runs the demo file seeded on first boot.
     </p>
 
+    <h2>scripts</h2>
+    <p>
+      a file ending in <code>.sk</code> is a script, run with
+      <code>run name.sk</code> and its arguments, or by a click in
+      <a class="int" href="../hylla/index.html">hylla</a>. each line is a shell
+      command, a comment starting with <code>#</code>, <code>name = expression</code> or a
+      block in braces the way c0 writes them.
+    </p>
+    <pre><code># count down, then start a program
+n = 3
+while (n > 0) {
+    echo $n
+    n = n - 1
+}
+if ($1 == "quiet") {
+    echo starting quietly
+} else {
+    echo starting $1
+}
+start lira.elf $1</code></pre>
+    <p>
+      every value is a string. <code>+ - * / %</code> and <code>&lt; &gt; &lt;= &gt;=</code> work
+      on whole numbers, <code>+</code> joins anything else, <code>==</code> and <code>!=</code> compare
+      strings. <code>&amp;&amp; || !</code> and parentheses work as in c0.
+      <code>$1</code> to <code>$9</code> are the arguments and <code>$#</code> how many
+      there are. a script stops at the first line it cannot read, saying where. it also stops after 100000 lines run. at the prompt, <code>name = expression</code> and
+      <code>$name</code> work too.
+    </p>
+
     <h2>users</h2>
     <p>
-      root and guest exist from the first boot, and <a class="int" href="../raket/index.html">raket</a>
-      asks for a login in every new session. <code>adduser</code>, <code>passwd</code> and
-      <code>login</code> manage users, and <code>own</code> and <code>mode</code> set a
+      root and guest exist from the first boot, since <a class="int" href="../raket/index.html">raket</a> asks for a login before anything is shown. <code>adduser</code>, <code>passwd</code> and <code>login</code> manage users, while <code>own</code> and <code>mode</code> set a
       file's owner and whether it is public, private or locked.
+    </p>
+    <p>
+      moonshot 0.6.0 and 0.6.1 did not keep users apart. <code>login</code> with
+      no password switched to any account, several commands did not ask who was
+      asking, a program took the rights of the window it was started from and
+      passwords were typed on the command line and kept in the history. if you
+      relied on either release to keep one user away from another, do not.
+      0.7.0 fixes this, within the limit in the next paragraph.
+    </p>
+    <p>
+      users are kept apart only for the length of one boot. users, passwords,
+      owners and modes are not saved, so after a reboot every file belongs to
+      root, every other user can read it and root has no password until
+      <code>passwd</code> is run. everything below holds within one boot.
+    </p>
+    <p>
+      each program keeps the user it was started as. so do the programs and
+      shell windows it starts. switching a shell window to root does not give
+      root rights to programs already running as a guest. only root or the
+      owner of a file may change it, including its mode, its name and its
+      contents. a locked file refuses reads by other users. new files belong to
+      the user who made them.
+    </p>
+    <p>
+      a password is typed at a masked prompt, with <code>login (name)</code> and
+      <code>passwd [user]</code>. it is never part of a command line and never
+      kept in the history. <code>passwd</code> asks for the old password, unless
+      root runs it. <code>adduser</code> and <code>own</code> need root. history
+      is kept per user, so up shows only the commands of the user of that
+      window.
+    </p>
+    <p>
+      a user starts programs and scripts, runs <code>interpret</code> and builds
+      with <code>execute</code> only from files that user or root owns, in
+      folders that user or root owns. root therefore runs only root's own files.
+      to run another user's program, take it over with <code>own</code> first.
+      copying another user's text into a file of your own, including running a
+      selection with F5 or F6 in <a class="int" href="../skrift/index.html">skrift</a>,
+      is running it.
+    </p>
+    <p>
+      <code>coff</code> and <code>smed</code> read only files that the user who
+      started them or root owns, in folders that the user or root owns, however
+      they are started. root takes over another user's library with
+      <code>own</code> before building with it.
+    </p>
+    <p>
+      <code>eval</code>, <code>eval -c</code> and <code>interpret</code> run in
+      the kernel and need root. <code>execute</code> builds a program that runs
+      in ring 3 with the user of whoever ran it. only root, or the user a task
+      runs as, can stop it with <code>kill</code>. prompt variables belong to
+      their user and window and are cleared when that window is replaced.
+    </p>
+    <p>
+      the person at the keyboard can use every open window, root's included.
+      a window whose folder is removed goes back to <code>/</code> and says
+      so. see <a class="int" href="../raket/index.html">raket</a> and
+      <a class="int" href="../kakel/index.html">kakel</a>.
     </p>
 
     <nav class="related" aria-label="related documentation">

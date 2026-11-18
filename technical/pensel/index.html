@@ -29,39 +29,41 @@
     </header>
 
     <p>
-      pensel is moonshot's pixel art editor.
-      it takes over one window and paints the sprite being edited as a zoomed
-      grid. on the way out it writes the result to
+      pensel is moonshot's pixel art editor, an ordinary ring-3 program in a
+      window of its own. it saves to
       <a class="int" href="../jakel/index.html">jakel</a> as a file a game can
-      load. <code>draw (file)</code> opens it and <code>draw (file) (size)</code>
-      opens it at a given canvas size, square, from 4 to 64 pixels across.
+      load. <code>draw (file)</code> in the shell opens it, as does a click on a picture in <a class="int" href="../hylla/index.html">hylla</a>.
+      <code>draw (file) (size)</code> starts a new picture at a given size, square,
+      from 4 to 64 pixels across. started with no name it is a new picture. F2 asks for one the first time. the grid grows to fill the window.
     </p>
 
     <figure class="shot">
-      <img src="../../media/pensel-canvas.png" width="512" height="384"
-           alt="a moonshot screen with pensel open in the top-left corner. a sixteen by sixteen grid shows a drawn red mushroom with white spots and a pale stem with two dark eyes, on a grey checkerboard standing for transparency. a two-column palette of colour swatches sits to the right of the grid, with a diagonal red slash marking the transparent slot. a title line above reads 'pensel: hero.spr 16x16  [s]ave [c]lear [q]uit'.">
-      <figcaption>a sprite drawn on the machine itself, on the transparency checkerboard, with the palette beside it.</figcaption>
+      <img src="../../media/pensel.png" width="512" height="384"
+           alt="a moonshot screen with the shell on the left and pensel on the right, editing moon.spr. a 48 by 48 grid shows a pale full moon with three darker grey craters on a grey checkerboard standing for transparency. a two-column palette of colour swatches sits to the right of the grid, with a diagonal red slash marking the transparent slot. the top bar reads moon.spr, 48x48, frame 1/1. the bar along the bottom lists F2 save, ^Z undo, ^Y redo, N new frame and D delete frame.">
+      <figcaption>the moon from about.html, on the transparency checkerboard, with the palette beside it.</figcaption>
     </figure>
 
     <h2>drawing</h2>
     <p>
-      the left mouse button paints the cell under the pointer, and dragging paints a
-      stroke. the right button erases. a click on the palette picks a colour. an empty
+      the left mouse button paints the cell under the pointer, so dragging paints a stroke. the right button erases, while a click on the palette picks a colour. an empty
       cell shows as a checkerboard, so transparent and black look different.
     </p>
 
     <h2>keys</h2>
     <dl>
-      <dt><code>s</code></dt>
+      <dt><kbd>F2</kbd></dt>
       <dd>save.</dd>
-      <dt><code>c</code></dt>
-      <dd>clear the canvas.</dd>
-      <dt><code>n</code>, <code>d</code></dt>
+      <dt><kbd>alt-w</kbd></dt>
+      <dd>quit. with unsaved changes it asks first, while a second <kbd>alt-w</kbd>
+      quits without saving.</dd>
+      <dt><kbd>ctrl-z</kbd>, <kbd>ctrl-y</kbd></dt>
+      <dd>undo and redo, a stroke at a time.</dd>
+      <dt><kbd>n</kbd>, <kbd>d</kbd></dt>
       <dd>add a frame after this one, as a copy of it, or delete this frame.</dd>
-      <dt><code>,</code> and <code>.</code></dt>
+      <dt><kbd>left</kbd>, <kbd>right</kbd></dt>
       <dd>step back and forward through the frames.</dd>
-      <dt><code>q</code>, escape</dt>
-      <dd>quit, saving if anything was painted.</dd>
+      <dt><kbd>c</kbd></dt>
+      <dd>clear the frame.</dd>
     </dl>
     <p>
       on every frame but the first, an empty pixel shows the frame before it faintly, so

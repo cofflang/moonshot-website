@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>moonshot · booting on hardware</title>
+<meta name="description" content="Preparing a USB stick and checking a Moonshot boot on a UEFI laptop.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body class="page-article">
+
+<header class="site-head sub">
+  <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
+  <nav class="cats" aria-label="categories">
+    <a href="../../technical/index.html" class="here" aria-current="page">technical</a>
+    <a href="../../releases/index.html">releases</a>
+    <a href="../../about/index.html">about</a>
+    <a href="../../meta/index.html">meta</a>
+  </nav>
+</header>
+
+<main>
+  <article class="article">
+    <header class="article-head">
+      <p class="crumb"><a href="../index.html">technical</a></p>
+      <h1>booting on hardware</h1>
+      <p class="article-meta">a USB image and a first-boot checklist</p>
+    </header>
+    <p>
+      moonshot boots through GRUB on BIOS or UEFI. its unsigned image needs
+      Secure Boot disabled. a UEFI machine needs the framebuffer requested by
+      the kernel because VGA text mode is unavailable there.
+    </p>
+    <h2>prepare the stick</h2>
+    <p>
+      from the moonshot source directory, run <code>./make_usb.sh --iso moonshot-usb.iso</code>
+      to build an image and print its hash without writing a device. keep that
+      hash with your boot notes. the script puts the kernel's own
+      <code>kernel/core/grub.cfg</code> on the stick, so GRUB starts moonshot at
+      once instead of after a menu. the script stops if that file loses the video
+      settings a UEFI machine needs. the kernel asks for 1024 by 768 at 32 bits
+      and falls back to any mode the firmware offers.
+    </p>
+    <p>
+      insert the intended USB stick and run <code>./make_usb.sh /dev/sdX</code>,
+      replacing the path with that USB device. the script checks that the device
+      is USB, asks you to type its name and verifies the image after writing it.
+      <code>--no-build</code> reuses the existing kernel. record the hash printed
+      by the writing run because a newly assembled ISO can have a different
+      timestamp even when its kernel is identical.
+    </p>
+    <h2>boot and inspect</h2>
+    <ol>
+      <li>open the firmware boot menu and choose the UEFI USB entry. on the
+        IdeaPad, use F12. record whether GRUB reaches a visible login screen.</li>
+      <li>log in as root with an empty password on a fresh boot. accounts and
+        passwords live in memory and do not survive reboot.</li>
+      <li>check letters, Shift, Backspace, arrows and Enter, then pointer
+        movement and clicking. run <code>besikta</code> for the detected hardware.</li>
+      <li>open hylla and an offline page in utsikt, then leave the machine
+        running for a minute and check that input still responds.</li>
+      <li>press F12 inside moonshot to show the boot log. record any blank
+        screen, fault or driver failure together with the image hash.</li>
+    </ol>
+    <h2>disk behavior</h2>
+    <p>
+      normal filesystem writes require Moonshot magic on the supported ATA
+      disk. an unrecognized disk is left untouched. a failed write is reported by <code>sync</code> instead of being counted as saved. <code>sync create</code>
+      initializes that disk only after typed confirmation and is not part of
+      this boot check. an I/O failure during sync can leave an incomplete
+      filesystem because saving is not crash-atomic.
+    </p>
+    <p>
+      an emulated UEFI boot checks the image packaging and kernel entry path.
+      it does not establish that the display, keyboard, touchpad or storage
+      work on a physical laptop.
+    </p>
+    <nav class="related" aria-label="related documentation">
+      <h2>related</h2>
+      <ul>
+        <li><a href="../raket/index.html">raket</a></li>
+        <li><a href="../skalman/index.html">skalman</a></li>
+        <li><a href="../jakel/index.html">jakel</a></li>
+      </ul>
+    </nav>
+  </article>
+</main>
+
+
+<footer class="site-foot">
+  <hr class="foot-rule">
+  <span class="mark foot-logo" aria-hidden="true"></span>
+  <hr class="foot-rule">
+</footer>
+
+</body>
+</html>

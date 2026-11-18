@@ -34,7 +34,7 @@
       tree, applies a subset of css, lays the result out and paints it into a
       window. it is an ordinary ring-3 program in a
       <a class="int" href="../kakel/index.html">kakel</a> tavla, started with
-      <code>start utsikt.elf</code>, and it draws every pixel itself.
+      <code>start utsikt.elf</code>. it draws every pixel itself.
     </p>
     <p>
       there is no networking, by decision. verk, the network stack, is the last
@@ -43,7 +43,7 @@
 
     <figure class="shot">
       <img src="../../media/utsikt-page.png" width="1024" height="768"
-           alt="a moonshot screen split into two tiles. on the left a shell prompt on black. on the right a tavla titled utsikt.elf showing a rendered web page on a light background: a large centred blue heading, a grey paragraph, a green-tinted box of text, section headings and wrapped body text with several words in bold.">
+           alt="a moonshot screen split into two tiles. on the left a shell prompt on black. on the right a tavla titled utsikt.elf showing a rendered web page on a light background, a large centred blue heading, a grey paragraph, a green-tinted box of text, section headings and wrapped body text with several words in bold.">
       <figcaption>utsikt rendering <code>/index.html</code> in a tavla, beside a shell.</figcaption>
     </figure>
 
@@ -59,9 +59,9 @@
     <p>
       colours, backgrounds, text size and weight, alignment, block and inline, margins
       and padding. selectors are a type (<code>p</code>), a class (<code>.lead</code>),
-      both (<code>p.lead</code>), comma-separated lists of those, and a descendant
+      both (<code>p.lead</code>), comma-separated lists of those and a descendant
       selector of two (<code>.note code</code>). specificity counts the way css counts
-      it, and vertical margins collapse. a selector utsikt cannot represent is dropped
+      it. vertical margins collapse. a selector utsikt cannot represent is dropped
       whole rather than applied in part.
     </p>
 
@@ -74,9 +74,21 @@
       beside it look the same.
     </p>
 
+    <h2>sheets, gradients and letters</h2>
+    <p>
+      a page may link style sheets with <code>&lt;link rel="stylesheet"&gt;</code>.
+      they apply in document order together with the <code>&lt;style&gt;</code>
+      blocks, up to 16 sheets of 64 KiB each. text may be filled with a gradient
+      that runs left to right, with <code>background: linear-gradient(...)</code>
+      and <code>background-clip: text</code>. the swedish letters, the accented e,
+      the en dash, the ellipsis and the curly double quotes are drawn in the
+      font's own cells. <code>margin</code> and <code>padding</code> are used only
+      when every side is the same.
+    </p>
     <h2>links</h2>
     <p>
-      a click on a link loads the file it names, resolved from the root, and Backspace
+      a click on a link loads the file it names, resolved from the folder of the
+      page that names it, or from the root when the name starts with <code>/</code>. <kbd>backspace</kbd>
       goes back. a link to another host is left alone. a strip along the bottom of the
       window says which file is open. a page's memory is given back to
       <a class="int" href="../lager/index.html">lager</a> when the next one has loaded, so
@@ -91,11 +103,26 @@
       <a class="int" href="../glimt/index.html">glimt</a>.
     </p>
 
+    <p>
+      a page that another user made opens with your rights, as data.
+      utsikt runs the scripts of a page only when the page belongs to the user
+      who opened it or to root. other users' pages open without their scripts.
+    </p>
+    <h2>a local site on the disk</h2>
+    <p>
+      <code>~/.config/moonshot/site-root</code> names the folder of a local site
+      and <code>~/.config/moonshot/site-files</code> lists the files to take,
+      one name per line. with both in place <code>build.sh</code> copies those
+      files and writes <code>build/site-disk.img</code>, a separate jakel disk
+      that holds the pages under <code>/site</code>. pictures are converted to
+      sprites on the way. the disk is attached to qemu by hand as a second disk.
+      a build without the config takes no files and writes the disk empty.
+    </p>
     <h2>its own repository</h2>
     <p>
       utsikt is developed in
-      <a href="https://github.com/cofflang/utsikt">github.com/cofflang/utsikt</a>,
-      and moonshot carries a copy of it in <code>programs/utsikt/</code>.
+      <a href="https://github.com/cofflang/utsikt">github.com/cofflang/utsikt</a>.
+      moonshot carries a copy of it in <code>programs/utsikt/</code>.
       contributions go to utsikt.
     </p>
 

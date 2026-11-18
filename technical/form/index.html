@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>moonshot · form</title>
+<meta name="description" content="form: a 3D modeller for gnista, written in c0.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body class="page-article">
+
+<header class="site-head sub">
+  <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
+  <nav class="cats" aria-label="categories">
+    <a href="../../technical/index.html" class="here" aria-current="page">technical</a>
+    <a href="../../releases/index.html">releases</a>
+    <a href="../../about/index.html">about</a>
+    <a href="../../meta/index.html">meta</a>
+  </nav>
+</header>
+
+<main>
+  <article class="article">
+    <header class="article-head">
+      <p class="crumb"><a href="../index.html">technical</a></p>
+      <h1>form</h1>
+      <p class="article-meta">a 3D modeller written in c0</p>
+    </header>
+
+    <p>
+      form shapes low-poly meshes for games made with
+      <a class="int" href="../gnista/index.html">gnista</a>, which draws them with djup.
+      a model starts as a cube, which grows by pulling its sides out and moving its
+      corners about. <code>start form.elf ship.form</code> opens one. a click on a <code>.form</code> file in <a class="int" href="../hylla/index.html">hylla</a> does too.
+      started with no name it is a new model, so <kbd>F2</kbd> asks for one.
+    </p>
+
+    <h2>seeing</h2>
+    <p>
+      dragging turns the camera around the model and the wheel brings it nearer or
+      further. faces are lit from above and behind the viewer, wherever the camera
+      goes. the edges are drawn white and the corners black over them, only
+      where they can be seen.
+    </p>
+
+    <h2>picking and moving</h2>
+    <p>
+      a click picks the corner under the pointer, or else the side, both triangles
+      of a square. <kbd>shift</kbd> and a click adds to what is picked, or takes away from it. <kbd>t</kbd> switches to picking single triangles. three handles stand out
+      from the middle of what is picked, red along x, green up and blue along z.
+      dragging one moves everything picked along its axis, a sixteenth of a unit at
+      a time.
+    </p>
+    <dl>
+      <dt><kbd>tab</kbd></dt>
+      <dd>pick the next side.</dd>
+      <dt>arrows</dt>
+      <dd>move what is picked along the floor, while with <kbd>shift</kbd> they move it up and down. with nothing picked they turn the camera.</dd>
+      <dt><kbd>e</kbd></dt>
+      <dd>pull the picked sides out, with new sides joining them to where they were.</dd>
+      <dt><kbd>1</kbd> to <kbd>9</kbd>, <kbd>del</kbd></dt>
+      <dd>colour the picked sides, or take them away.</dd>
+      <dt><kbd>=</kbd>, <kbd>-</kbd></dt>
+      <dd>what is picked a quarter bigger or a fifth smaller, around its own middle.</dd>
+      <dt><kbd>m</kbd></dt>
+      <dd>mirror the picked sides across x = 0, or the whole model when no side is
+      picked.</dd>
+      <dt><kbd>d</kbd></dt>
+      <dd>a copy of the picked sides, or of the whole model, half a unit to the right
+      on the screen. the copy is what is picked afterwards, to be moved on.</dd>
+      <dt><kbd>g</kbd></dt>
+      <dd>the picked corners, or all of them, onto the nearest sixteenth of a unit,
+      the steps the handles move in, so a corner that <kbd>=</kbd> or <kbd>-</kbd> left off the grid meets its
+      neighbours again.</dd>
+      <dt><kbd>n</kbd></dt>
+      <dd>a new cube where the camera looks.</dd>
+      <dt><kbd>w</kbd></dt>
+      <dd>turns the edges and corners on or off.</dd>
+      <dt><kbd>ctrl-z</kbd>, <kbd>ctrl-y</kbd>, <kbd>F2</kbd></dt>
+      <dd>undo, redo and save.</dd>
+      <dt><kbd>alt-w</kbd></dt>
+      <dd>quit. with unsaved changes it asks first, while a second <kbd>alt-w</kbd>
+      quits without saving.</dd>
+    </dl>
+
+    <h2>mirroring</h2>
+    <p>
+      most things worth modelling are the same on both sides, so only one half needs
+      making. <kbd>m</kbd> adds a copy of the picked sides with every x turned to its
+      negative. a mirror turns a face inside out, so each copy takes its corners in
+      the other order and faces outwards again. a corner that lies on x = 0 is shared
+      by both halves instead of copied, so a half built up to the middle comes out
+      joined to its mirror image. the copy is what is picked afterwards, ready to be
+      moved or coloured.
+    </p>
+
+    <figure class="shot">
+      <img src="../../media/form-mirror.png" width="512" height="384"
+           alt="form on the right half of the screen. a cube whose left side has been made a quarter bigger, so the cube flares out towards it. on its right is a picked copy of that side, outlined in yellow, mirrored across x = 0 and standing out past the cube's own right side. the bottom line says mirrored across x = 0.">
+      <figcaption>a cube's side scaled up, then mirrored to the other side.</figcaption>
+    </figure>
+
+    <nav class="related" aria-label="related documentation">
+      <h2>related</h2>
+      <ul>
+        <li><a href="../gnista/index.html">gnista</a></li>
+        <li><a href="../pensel/index.html">pensel</a></li>
+        <li><a href="../hylla/index.html">hylla</a></li>
+      </ul>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-foot">
+  <hr class="foot-rule">
+  <span class="mark foot-logo" aria-hidden="true"></span>
+  <hr class="foot-rule">
+</footer>
+
+</body>
+</html>

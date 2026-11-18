@@ -30,7 +30,7 @@
 
     <p>
       lager is where a program running in ring 3 gets its memory from and where
-      it gives that memory back. every such program has an 8MB heap of its own,
+      it gives that memory back. every such program has a 32MB heap of its own,
       reserved when it starts and backed by real pages only as it asks for them.
       <code>alloc(n)</code> asks lager for <code>n</code> bytes and
       <code>dealloc(p)</code> hands a block back, each of them one system call.
@@ -40,9 +40,14 @@
     <p>
       the kernel's own allocator in <a class="int" href="../jenna/index.html">jenna</a>
       keeps a small header in front of each block. here that would be a header the
-      program can rewrite, and a forged size would let it write anywhere, kernel memory
-      included. so lager keeps its table of blocks in kernel memory, one per program,
-      and the program only ever sees the addresses of its blocks.
+      program can rewrite. a forged size would let it write anywhere, kernel memory
+      included. so lager keeps its table of blocks where the program cannot reach it.
+      the program only ever sees the addresses of its blocks.
+    </p>
+    <p>
+      each program's table sits in that program's own address space, 2MB past the
+      end of its heap, on pages mapped for the kernel alone. it gains a page when it
+      fills, up to 4MB, about 174,000 blocks. it goes away with the program.
     </p>
 
     <h2>handing out and taking back</h2>

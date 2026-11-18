@@ -29,8 +29,8 @@
     </header>
 
     <p>
-      jenna is moonshot's memory, who owns every physical page, how small allocations are
-      carved out of big ones, and the page tables that decide what the addresses the
+      jenna is moonshot's memory. it owns every physical page, carves small allocations
+      out of big ones and keeps the page tables that decide what the addresses the
       kernel uses actually mean.
     </p>
 
@@ -38,7 +38,7 @@
     <p>
       the bottom layer hands out physical memory in 4096-byte pages, from the first usable
       region past the end of the kernel. a freed page goes onto a free list kept inside the
-      freed pages themselves, and an allocation takes from that list first, so freed memory
+      freed pages themselves. an allocation takes from that list first, so freed memory
       is reused.
     </p>
 
@@ -46,7 +46,7 @@
     <p>
       <code>kmalloc</code> and <code>kfree</code> sit on top, for the many small pieces of
       memory the kernel needs. every block has a small header with its size and whether it
-      is free, allocation takes the first block that fits, and a free merges the block with
+      is free, allocation takes the first block that fits. a free merges the block with
       free neighbours. <code>kfree</code> refuses a pointer it never handed out and a block
       that is already free, loudly, since a quiet double free corrupts something unrelated
       much later.
@@ -55,15 +55,17 @@
     <h2>page tables</h2>
     <p>
       jenna builds the kernel's page tables at boot from pages it allocated itself,
-      mapping physical memory one to one. it also owns the page fault handler. a fault in
-      the kernel gets a fresh zeroed page and the instruction runs again. a fault in a
-      ring-3 program is a bad address of its own and ends the program.
+      mapping physical memory one to one. it also owns the page fault handler. one
+      authorized boot probe can fault, receive a zeroed page and retry its instruction.
+      other kernel faults halt unless they occur at a guarded user-copy site, where
+      recovery ends the calling program. a fault in ring 3 also ends that program.
     </p>
     <p>
-      every ring-3 program runs on page tables of its own, which share the kernel's
-      entries and add a private range for the program's code, stack and heap, so two
-      programs never share a page. when the program is gone, <code>pt_free</code> gives
-      all of it back.
+      every ring-3 program runs on page tables of its own, with private mappings for
+      its code, stack and heap. inherited kernel mappings stay supervisor-only and
+      cannot be replaced by the user mapper. a failed mapping leaves the existing
+      tree intact. when the program is gone, <code>pt_free</code> reclaims its owned
+      pages and tables without freeing the shared kernel branches.
     </p>
 
     <nav class="related" aria-label="related documentation">

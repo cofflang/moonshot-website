@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>moonshot · insyn</title>
+<meta name="description" content="insyn: a look inside moonshot, its processes, memory, performance and hardware.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body class="page-article">
+
+<header class="site-head sub">
+  <a class="brand" href="../../index.html"><span class="mark" aria-hidden="true"></span> moonshot</a>
+  <nav class="cats" aria-label="categories">
+    <a href="../../technical/index.html" class="here" aria-current="page">technical</a>
+    <a href="../../releases/index.html">releases</a>
+    <a href="../../about/index.html">about</a>
+    <a href="../../meta/index.html">meta</a>
+  </nav>
+</header>
+
+<main>
+  <article class="article">
+    <header class="article-head">
+      <p class="crumb"><a href="../index.html">technical</a></p>
+      <h1>insyn</h1>
+      <p class="article-meta">a look inside the machine</p>
+    </header>
+
+    <p>
+      insyn shows what moonshot is doing, for finding out why something is slow or
+      full. it is an ordinary ring-3 program started with <code>start insyn.elf</code>. it only looks, it changes nothing, with everything on one screen that <kbd>alt-w</kbd> closes.
+    </p>
+
+    <figure class="shot">
+      <img src="../../media/insyn.png" width="512" height="384"
+           alt="insyn beside a shell. the process table lists insyn.elf and skalman, under it meters for physical memory, the kernel heap and the files, then graphs of system calls, keyboard interrupts, mouse packets, sound played and redraws. the last corner holds the hardware, a QEMU virtual cpu, the screen at 1024 x 768, 125.8 MB of memory, an 8 MB disk and a PS/2 mouse.">
+      <figcaption>insyn in half the screen, the hardware in the corner the graphs leave.</figcaption>
+    </figure>
+
+    <dl>
+      <dt>processes</dt>
+      <dd>every task, its name, whether it runs or waits, its share of the cpu, its
+      heap, its window (the number in that window's title) and how many times a
+      second it puts a new picture in it. under them physical memory, the kernel's
+      heap and the files in <a class="int" href="../jakel/index.html">jakel</a> as
+      meters.</dd>
+      <dt>graphs</dt>
+      <dd>system calls, keyboard and mouse input, sound played and redraws, each a
+      second, over the last two minutes.</dd>
+      <dt>hardware</dt>
+      <dd>beside the last graph, the cpu by name, its family and features, the
+      screen, the memory, the disk, the mouse and the sound card.</dd>
+    </dl>
+    <p>
+      a task's share of the cpu is how many timer ticks found it working rather than
+      waiting. a program that waits gives the cpu away at once (see
+      <a class="int" href="../chrone/index.html">chrone</a>), so one that is idle shows
+      close to nothing.
+    </p>
+    <p>
+      everything comes from one system call, <code>SYS_INFO</code>, read twice a
+      second, which copies the kernel's counters out and lets nothing in.
+    </p>
+
+    <nav class="related" aria-label="related documentation">
+      <h2>related</h2>
+      <ul>
+        <li><a href="../knekt/index.html">knekt</a></li>
+        <li><a href="../chrone/index.html">chrone</a></li>
+        <li><a href="../lager/index.html">lager</a></li>
+      </ul>
+    </nav>
+
+  </article>
+</main>
+
+<footer class="site-foot">
+  <hr class="foot-rule">
+  <span class="mark foot-logo" aria-hidden="true"></span>
+  <hr class="foot-rule">
+</footer>
+
+</body>
+</html>

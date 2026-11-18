@@ -31,22 +31,25 @@
     <p>
       oljud is moonshot's sound driver. it drives a sound blaster 16 and plays
       whatever a ring-3 program hands it through <code>sound(buf, len)</code>,
-      one system call. samples are 8-bit mono at 22050 a second, where 128 is
-      silence, so a program can build sound with nothing but <code>store8</code>.
+      one system call. samples come at 22050 a second. a program starts with 8-bit
+      mono, where 128 is silence, so it can build sound with nothing but
+      <code>store8</code>. <code>sound_format(1)</code> switches it to 16-bit mono and
+      <code>sound_format(2)</code> to 16-bit stereo, left then right. the card itself
+      plays 16-bit stereo. mono is heard the same on both sides.
     </p>
 
     <h2>why this card</h2>
     <p>
-      the sound blaster 16 is an isa card from 1992, and its age is the point.
+      the sound blaster 16 is an isa card from 1992. its age is the point.
       everything about it sits at a fixed address, port 0x220, interrupt 5 and
       the old isa dma controller. newer audio chips sit on the pci bus and have
-      to be found by walking it first, which moonshot does not do yet. qemu
-      emulates the card, and people still own the real thing.
+      to be found by walking it first. qemu
+      emulates the card, while people still own the real thing.
     </p>
 
     <h2>how it plays</h2>
     <p>
-      the dma controller loops over a buffer of two halves on its own, and the card
+      the dma controller loops over a buffer of two halves on its own. the card
       interrupts at the end of each half. while it reads one half, the interrupt
       handler refills the other with what programs have queued, or with silence.
     </p>
@@ -56,6 +59,13 @@
       returns how much is still waiting and <code>sound(0, -1)</code> stops the
       program's sound at once. the queues of all programs are mixed, so two programs
       are heard together.
+    </p>
+
+    <h2>the sounds moonshot makes itself</h2>
+    <p>
+      sign-in plays a short sound, made by the program <code>fanfar.elf</code>
+      with no window of its own. a window opens and closes with a soft cue. the
+      word <code>tyst</code> on the kernel line in grub turns the cues off.
     </p>
 
     <nav class="related" aria-label="related documentation">

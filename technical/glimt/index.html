@@ -45,7 +45,7 @@ void bump() {
     <p>
       with that in a page, an element with <code>onclick="bump();"</code>
       counts its own clicks. every value is an int. there are functions, if
-      and else, while and for with break and continue, return, and c0's
+      and else, while and for with break and continue, return and c0's
       operators. a page's scripts run top to bottom once when it loads, before
       its first frame.
     </p>
@@ -61,9 +61,13 @@ void bump() {
       anywhere in utsikt's memory.
     </p>
     <p>
+      a page runs its scripts only when the page belongs to the user who opened
+      it or to root. the scripts of another user's page stay text.
+    </p>
+    <p>
       the code glimt writes never faults. division by zero gives 0, a loop
       that runs too long or a function that runs out of stack is stopped with
-      a line in the serial log, and the next script on the page runs as if
+      a line in the serial log. the next script on the page runs as if
       nothing happened.
     </p>
 

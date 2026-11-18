@@ -29,15 +29,23 @@
     </header>
 
     <p>
-      chrone is a preemptive, round-robin scheduler. tasks do not yield, the timer takes
-      the CPU from them. the runnable tasks form a ring, and each runs for one timer tick,
-      about ten milliseconds, before the next one gets the CPU.
+      chrone is a preemptive, round-robin scheduler. the timer takes the CPU from a task that keeps working. the runnable tasks form a ring, where each runs for one
+      timer tick, about ten milliseconds, before the next one gets the CPU. a task that
+      has nothing to do, one that sleeps or waits for another, gives the CPU away at
+      once.
+    </p>
+
+    <h2>giving the CPU away</h2>
+    <p>
+      a waiting task raises interrupt 48 on itself, which takes the same path as the
+      timer's switch without waiting for the timer. when no other task can run the CPU
+      halts until the next interrupt.
     </p>
 
     <h2>how a switch happens</h2>
     <p>
       when the timer fires, the CPU pushes the interrupted task's return frame onto that
-      task's own stack, and the kernel's interrupt entry pushes the rest of the registers
+      task's own stack. the kernel's interrupt entry pushes the rest of the registers
       after it. to switch, chrone remembers where that stack pointer ended up, picks the
       next runnable task in the table and returns from the interrupt on that task's saved
       stack pointer instead. a new task gets a hand-built frame on a fresh stack that looks
@@ -56,7 +64,8 @@
       <code>task_spawn</code> claims a free slot, gives it a stack and marks it runnable.
       <code>task_exit</code> marks the caller's own slot exited. the shell's
       <code>kill</code>, closing a tavla and a fault in a ring-3 program mark another
-      task's slot exited, and the scheduler never picks it again. an exited task cannot
+      task's slot exited. only root, or the user a task runs as, can stop it with <code>kill</code>. the scheduler never picks it again. a task marked exited while it is still running does nothing more when it calls
+      the system. it halts until the scheduler moves on. an exited task cannot
       free the stack it is standing on, so a reaper at the top of every tick gives what
       other exited tasks owned back to
       <a class="int" href="../jenna/index.html">jenna</a>, a ring-3 program's whole
@@ -68,8 +77,15 @@
       the quantum is one tick because of what a longer one does to anything that moves on
       screen. with four tasks and a quantum of a tenth of a second, a program draws for a
       tenth of a second and then sits frozen for three tenths. the frame rate is the same
-      either way, only the spacing changes, and at one tick per turn the frames arrive
+      either way, only the spacing changes. at one tick per turn the frames arrive
       evenly.
+    </p>
+
+    <h2>local time</h2>
+    <p>
+      the clock counts utc. <code>zone</code> sets the offset to local time, from
+      -24 to +24 hours and saves it in <code>tid.zone</code>. there is no summer
+      time.
     </p>
 
     <nav class="related" aria-label="related documentation">
